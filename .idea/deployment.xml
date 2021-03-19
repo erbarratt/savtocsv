@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" autoUpload="Always" serverName="Pi" uploadOnCheckin="9999e561-3b97-4615-950f-2dfc065834cc" remoteFilesAllowedToDisappearOnAutoupload="false">
+    <serverData>
+      <paths name="Pi">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+    <option name="myUploadOnCheckinName" value="Pi" />
+    <option name="myAutoUpload" value="ALWAYS" />
+  </component>
+</project>
