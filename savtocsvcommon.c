@@ -171,13 +171,12 @@ int lineLimit = 0;
 				//get file pointer
 					case 'f':
 						sav = optarg;
-						printOut("Input file: %s", optarg, "cyan");
+						printOut("Input file: \n\t%s", optarg, "cyan");
 					break;
 					
 				//get output filename
 					case 'o':
 						csv = optarg;
-						printOut("Output file suffix: %s", optarg, "cyan");
 					break;
 					
 				//silent switch for stdout
@@ -198,7 +197,7 @@ int lineLimit = 0;
 							printOutErr("-l argument must be number", optarg);
 							exitTest = true;
 						} else {
-							printOut("CSV Line Length set to: %s", optarg, "cyan");
+							printOut("CSV Line Length set to: \n\t%s", optarg, "cyan");
 						}
 						
 					break;
@@ -216,18 +215,23 @@ int lineLimit = 0;
 			}
 			
 		}
+
+
 		
 		//check sav file option
 			if(sav == NULL){
 				printOutErr("Missing required option -f", "");
 				exitTest = true;
 			}
+
+        //output csv prefix
+            printOut("Output file prefix: \n\t%s", csv, "cyan");
 			
 		//check line limit or set default
 			if(lineLimit == 0){
 				lineLimit = 100000;
 				char *lltxt = "100000";
-				printOut("CSV Line Length set to: %s", lltxt, "cyan");
+				printOut("CSV Line Length set to: \n\t%s", lltxt, "cyan");
 			}
 			
 		//error yet?

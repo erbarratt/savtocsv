@@ -4,21 +4,21 @@
 #include "savtocsvcommon.h"
 #include "savtocsvlib.h"
 
-const RECORD_TYPE_VARIABLE = 2;
-const RECORD_TYPE_VALUE_LABELS = 3;
-const RECORD_TYPE_VALUE_LABELS_INDEX = 4;
-const RECORD_TYPE_DOCUMENTS = 6;
-const RECORD_TYPE_ADDITIONAL = 7;
-const RECORD_TYPE_FINAL = 999;
+const int RECORD_TYPE_VARIABLE = 2;
+const int RECORD_TYPE_VALUE_LABELS = 3;
+const int RECORD_TYPE_VALUE_LABELS_INDEX = 4;
+const int RECORD_TYPE_DOCUMENTS = 6;
+const int RECORD_TYPE_ADDITIONAL = 7;
+const int RECORD_TYPE_FINAL = 999;
 
-const COMPRESS_SKIP_CODE = 0;
-const COMPRESS_END_OF_FILE = 252;
-const COMPRESS_NOT_COMPRESSED = 253;
-const COMPRESS_ALL_BLANKS = 254;
-const COMPRESS_MISSING_VALUE = 255;
+const int COMPRESS_SKIP_CODE = 0;
+const int COMPRESS_END_OF_FILE = 252;
+const int COMPRESS_NOT_COMPRESSED = 253;
+const int COMPRESS_ALL_BLANKS = 254;
+const int COMPRESS_MISSING_VALUE = 255;
 
 //Number of bytes really stored in each segment of a very long string variable.
-	const REAL_VLS_CHUNK = 255;
+	const int REAL_VLS_CHUNK = 255;
 
 FILE *savPtr;
 int cursor = 0;
