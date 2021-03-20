@@ -58,7 +58,7 @@ double doubleBuffer;
 			}
 			
 		//log
-			printOut("Opened .sav file: %s\n\t", filename, "cyan");
+			printOut("Opened .sav file: \n\t%s", filename, "cyan");
 			
 		//header
 			readHeader();
@@ -82,7 +82,7 @@ double doubleBuffer;
 	void readHeader(){
 		
 		if(silent == false){
-			printOut("Reading file header...\n", "", "cyan");
+			printOut("Reading file header...", "", "cyan");
 		}
 		
 		fseek(savPtr, 0, SEEK_SET);
