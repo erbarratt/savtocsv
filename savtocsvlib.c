@@ -1,24 +1,24 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include "savtocsvcommon.h"
 #include "savtocsvlib.h"
 
-const int RECORD_TYPE_VARIABLE = 2;
-const int RECORD_TYPE_VALUE_LABELS = 3;
-const int RECORD_TYPE_VALUE_LABELS_INDEX = 4;
-const int RECORD_TYPE_DOCUMENTS = 6;
-const int RECORD_TYPE_ADDITIONAL = 7;
-const int RECORD_TYPE_FINAL = 999;
-
-const int COMPRESS_SKIP_CODE = 0;
-const int COMPRESS_END_OF_FILE = 252;
-const int COMPRESS_NOT_COMPRESSED = 253;
-const int COMPRESS_ALL_BLANKS = 254;
-const int COMPRESS_MISSING_VALUE = 255;
-
-//Number of bytes really stored in each segment of a very long string variable.
-	const int REAL_VLS_CHUNK = 255;
+//const int RECORD_TYPE_VARIABLE = 2;
+//const int RECORD_TYPE_VALUE_LABELS = 3;
+//const int RECORD_TYPE_VALUE_LABELS_INDEX = 4;
+//const int RECORD_TYPE_DOCUMENTS = 6;
+//const int RECORD_TYPE_ADDITIONAL = 7;
+//const int RECORD_TYPE_FINAL = 999;
+//
+//const int COMPRESS_SKIP_CODE = 0;
+//const int COMPRESS_END_OF_FILE = 252;
+//const int COMPRESS_NOT_COMPRESSED = 253;
+//const int COMPRESS_ALL_BLANKS = 254;
+//const int COMPRESS_MISSING_VALUE = 255;
+//
+////Number of bytes really stored in each segment of a very long string variable.
+//const int REAL_VLS_CHUNK = 255;
 
 FILE *savPtr;
 int cursor = 0;
@@ -29,7 +29,7 @@ int intBuffer;
 double doubleBuffer;
 
 /**
-* Main runthrough for file conversion
+* Main run through for file conversion
 * @return void
 */
 	void convertToCSV(char *filename){
@@ -58,10 +58,12 @@ double doubleBuffer;
 			}
 			
 		//log
-			printOut("Opened .sav file: %s", filename, "cyan");
+			printOut("Opened .sav file: %s\n\t", filename, "cyan");
 			
 		//header
 			readHeader();
+	
+		closeFile();
 		
 	}
 	
@@ -80,13 +82,13 @@ double doubleBuffer;
 	void readHeader(){
 		
 		if(silent == false){
-			printOut("Reading file header...", "", "cyan");
+			printOut("Reading file header...\n", "", "cyan");
 		}
 		
 		fseek(savPtr, 0, SEEK_SET);
 		
 		//get file type
-			readWord("File Indetifier:\n\t");
+			readWord("File Identifier:\n\t");
 			
 			if (strcmp(wordBuffer, "$FL2") != 0){
 				printOutErr("File must begin with chars $FL2 for a valid SPSS .sav file. Got: %s", wordBuffer);

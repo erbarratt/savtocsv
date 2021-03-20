@@ -20,6 +20,19 @@ int lineLimit = 0;
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
 /**
+* Close the program with a newline
+* @return void
+*/
+	void exitSavtocsv(){
+		
+		if(!silent){
+			printf("\n");
+		}
+		exit(EXIT_FAILURE);
+	
+	}
+
+/**
 * Set the colour output of the console
 * @param char *col The chosen colour
 * @return void
@@ -46,6 +59,10 @@ int lineLimit = 0;
 			
 			printf(ANSI_COLOR_CYAN);
 				
+		} else if (strcmp(col, "magenta") == 0){
+			
+			printf(ANSI_COLOR_MAGENTA);
+			
 		} else if (strcmp(col, "reset") == 0){
 			
 			printf(ANSI_COLOR_RESET);
@@ -116,8 +133,6 @@ int lineLimit = 0;
 		
 		int opt;
 		
-		bool exitTest = false;
-		
 		//check for version output
 		// If the first character of optstring is '-', then each nonoption argv-element is handled as if 
 		// it were the argument of an option with character code 1. (This is used by programs that were written to expect options and other argv-elements in any order and that care about the ordering of the two.) 
@@ -133,7 +148,7 @@ int lineLimit = 0;
 						printf("version 1.0 ");
 						printf(ANSI_COLOR_RESET);
 						printf("2021-03\n");
-						exit(EXIT_FAILURE);
+						exitSavtocsv();
 					}
 				}
 				
@@ -155,13 +170,13 @@ int lineLimit = 0;
 			optind = 1;
 		
 		//ullo
-			printOut("----------SAV To CSV----------", "", "green");
+			printOut("\n----------SAV To CSV----------", "", "green");
 		
 		//if it's not -v then is the num of args correct?
 			if(argc < 2){
 				printOutErr("Missing required options.", "");
 				printOutErr("Usage: savtocsv [-v] | [-f] [file...] [-o] [file...] [-l] [int] [-s]", "");
-				exit(EXIT_FAILURE);
+				exitSavtocsv();
 			}
 	
 		while ((opt = getopt(argc, argv, "-f:o:l:svd")) != -1) {
@@ -171,7 +186,7 @@ int lineLimit = 0;
 				//get file pointer
 					case 'f':
 						sav = optarg;
-						printOut("Input file: \n\t%s", optarg, "cyan");
+						printOut("Input file set: \n\t%s", optarg, "magenta");
 					break;
 					
 				//get output filename
@@ -195,9 +210,9 @@ int lineLimit = 0;
 						lineLimit = atoi(optarg);
 						if(lineLimit == 0){
 							printOutErr("-l argument must be number", optarg);
-							exitTest = true;
+							exitSavtocsv();
 						} else {
-							printOut("CSV Line Length set to: \n\t%s", optarg, "cyan");
+							printOut("CSV Line Length set to: \n\t%s", optarg, "magenta");
 						}
 						
 					break;
@@ -206,11 +221,9 @@ int lineLimit = 0;
 					case '?':
 					
 						printOutErr("Option not in option list of -f -o -l", "");
-						exitTest = true;
+						exitSavtocsv();
 						
 					break;
-					
-				break;
 					
 			}
 			
@@ -221,22 +234,21 @@ int lineLimit = 0;
 		//check sav file option
 			if(sav == NULL){
 				printOutErr("Missing required option -f", "");
-				exitTest = true;
+				exitSavtocsv();
 			}
 
         //output csv prefix
-            printOut("Output file prefix: \n\t%s", csv, "cyan");
+            if(strcmp(csv, "out") == 0){
+                printOut("Output file prefix default: \n\tout", "", "yellow");
+            } else {
+	            printOut("Output file prefix set: \n\t%s", csv, "magenta");
+            }
 			
 		//check line limit or set default
 			if(lineLimit == 0){
 				lineLimit = 100000;
 				char *lltxt = "100000";
-				printOut("CSV Line Length set to: \n\t%s", lltxt, "cyan");
-			}
-			
-		//error yet?
-			if(exitTest){
-				exit(EXIT_FAILURE);
+				printOut("CSV Line Length default: \n\t%s", lltxt, "yellow");
 			}
 		
 	}

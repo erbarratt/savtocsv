@@ -9,6 +9,17 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="Remote Host (67fdbacd-858f-4b80-b028-b90f7c152330)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/tmp.VDLOlGiFNG" local="$PROJECT_DIR$" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-remote-host" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
     </serverData>
     <option name="myUploadOnCheckinName" value="Pi" />
     <option name="myAutoUpload" value="ALWAYS" />

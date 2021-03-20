@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "savtocsvcommon.h"
 #include "savtocsvlib.h"
 
@@ -13,10 +11,11 @@ int main(int argc, char *argv[]){
 		
 	//read file to validate
 		
-	//convert data to csv's
+	//convert data to csvs
+	
+	exitSavtocsv();
 	
 	return 0;
-	
 	
 }
 
