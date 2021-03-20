@@ -10,4 +10,4 @@ add_executable(
         savtocsvlib.h
         savtocsvcommon.c
         savtocsvlib.c
-        savtocsv.c)
+        savtocsv.c common.h)
