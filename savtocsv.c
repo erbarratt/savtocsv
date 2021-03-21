@@ -2,7 +2,6 @@
 #include "savtocsvlib.h"
 #include "savtocsvcommon.h"
 
-
 void parseOpts(int argc, char *argv[]);
 
 bool debug = false;
@@ -80,44 +79,44 @@ void parseOpts(int argc, char *argv[]){
 		switch (opt) {
 			
 			//get file pointer
-			case 'f':
-				sav = optarg;
-				printOut("Input file set: \n\t%s", optarg, "magenta");
+				case 'f':
+					sav = optarg;
+					printOut("Input file set: \n\t%s", optarg, "magenta");
 				break;
 				
-				//get output filename
-			case 'o':
-				csv = optarg;
+			//get output filename
+				case 'o':
+					csv = optarg;
 				break;
 				
-				//silent switch for stdout
-			case 's':
-				silent = true;
+			//silent switch for stdout
+				case 's':
+					silent = true;
 				break;
 				
-				//debug switch for stdout
-			case 'd':
-				debug = true;
+			//debug switch for stdout
+				case 'd':
+					debug = true;
 				break;
 				
-				//how pany lines per csv?
-			case 'l':
+			//how pany lines per csv?
+				case 'l':
+					
+					lineLimit = atoi(optarg);
+					if(lineLimit == 0){
+						printOutErr("-l argument must be number", optarg);
+						exitSavtocsv();
+					} else {
+						printOut("CSV Line Length set to: \n\t%s", optarg, "magenta");
+					}
 				
-				lineLimit = atoi(optarg);
-				if(lineLimit == 0){
-					printOutErr("-l argument must be number", optarg);
+				break;
+				
+			//option not in optstring
+				case '?':
+					
+					printOutErr("Option not in option list of -f -o -l", "");
 					exitSavtocsv();
-				} else {
-					printOut("CSV Line Length set to: \n\t%s", optarg, "magenta");
-				}
-				
-				break;
-				
-				//option not in optstring
-			case '?':
-				
-				printOutErr("Option not in option list of -f -o -l", "");
-				exitSavtocsv();
 				
 				break;
 			
@@ -128,23 +127,23 @@ void parseOpts(int argc, char *argv[]){
 	
 	
 	//check sav file option
-	if(sav == NULL){
-		printOutErr("Missing required option -f", "");
-		exitSavtocsv();
-	}
+		if(sav == NULL){
+			printOutErr("Missing required option -f", "");
+			exitSavtocsv();
+		}
 	
 	//output csv prefix
-	if(strcmp(csv, "out") == 0){
-		printOut("Output file prefix default: \n\tout", "", "yellow");
-	} else {
-		printOut("Output file prefix set: \n\t%s", csv, "magenta");
-	}
+		if(strcmp(csv, "out") == 0){
+			printOut("Output file prefix default: \n\tout", "", "yellow");
+		} else {
+			printOut("Output file prefix set: \n\t%s", csv, "magenta");
+		}
 	
 	//check line limit or set default
-	if(lineLimit == 0){
-		lineLimit = 1000000;
-		char *lltxt = "1000000";
-		printOut("CSV Line Length default: \n\t%s", lltxt, "yellow");
-	}
+		if(lineLimit == 0){
+			lineLimit = 1000000;
+			char *lltxt = "1000000";
+			printOut("CSV Line Length default: \n\t%s", lltxt, "yellow");
+		}
 	
 }

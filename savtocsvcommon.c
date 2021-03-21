@@ -118,6 +118,11 @@ char ANSI_COLOR_RESET[] = "\x1b[0m";
 		
 	}
 
+/**
+* Turn 32 bit int into string
+* @param int num The int
+* @return char*
+*/
 	char* intToStr32(int num){
 	
 		int length = snprintf( NULL, 0, "%d", num );
@@ -127,6 +132,11 @@ char ANSI_COLOR_RESET[] = "\x1b[0m";
 		
 	}
 	
+/**
+* Turn 64 bit int into string
+* @param int64_t num The int
+* @return char*
+*/
 	char* intToStr64(int64_t num){
 	
 		int length = snprintf( NULL, 0, "%" PRId64, num );
@@ -136,6 +146,11 @@ char ANSI_COLOR_RESET[] = "\x1b[0m";
 		
 	}
 	
+/**
+* Turn double into string
+* @param double num The int
+* @return char*
+*/
 	char* doubleToStr(double num){
 	
 		int length = snprintf( NULL, 0, "%f", num );
