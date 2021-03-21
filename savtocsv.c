@@ -14,12 +14,6 @@ int main(int argc, char *argv[]){
 	
 	//open the file or exit
 		convertToCSV(sav);
-		
-	//read file to validate
-		
-	//convert data to csvs
-	
-	exitSavtocsv();
 	
 	return 0;
 	

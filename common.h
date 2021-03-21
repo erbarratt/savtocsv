@@ -17,4 +17,5 @@
 
 extern bool silent;
 extern bool debug;
+extern bool longCsv;
 

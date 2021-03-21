@@ -42,6 +42,22 @@
 
 /** @var double flt64Buffer Buffer for storing 64 bit / 8 byte floating point numbers */
 	double flt64Buffer;
+	
+	int compressionSwitch;
+	int numberOfCases;
+	double compressionBias;
+	
+	int numberOfVariables = 0;
+
+	typedef struct Variable{
+		int type;
+		int measure;
+		int cols;
+		int alignment;
+		struct Variable * next;
+	} variable_t;
+
+	variable_t * variablesList = NULL;
 
 /**
 * Main run through for file conversion
@@ -76,11 +92,26 @@
 		//log
 			printOut("Opened .sav file: \n\t%s", filename, "cyan");
 			
+		//initialise linked list
+			variablesList = (variable_t*)malloc(sizeof(variable_t));
+			variablesList->type = 0;
+			variablesList->measure = 0;
+			variablesList->cols = 0;
+			variablesList->alignment = 0;
+			variablesList->next = NULL;
+		
 		//header
 			readHeader();
 			
 		//meta
 			readMeta();
+			
+		//data
+			if(longCsv){
+				dataToCsvLong();
+			} else {
+				dataToCsvFlat();
+			}
 		
 	}
 	
@@ -91,6 +122,24 @@
 	void closeFile(){
 		fclose(savPtr);
 	}
+
+	void addVariable(variable_t * head, int type) {
+	
+		variable_t * current = head;
+		
+		while (current->next != NULL) {
+			current = current->next;
+		}
+		
+		//add new var
+		current->next = (variable_t *) malloc(sizeof(variable_t));
+		current->next->type = type;
+		current->next->measure = 0;
+		current->next->cols = 0;
+		current->next->alignment = 0;
+		current->next->next = NULL;
+		
+	}
 	
 /**
 * Read from the sav file until the start of the data blocks
@@ -98,7 +147,7 @@
 */
 	void readHeader(){
 		
-		if(silent == false){
+		if(!silent){
 			printOut("Reading file header...", "", "cyan");
 		}
 		
@@ -135,7 +184,7 @@
 			//@72
 			
 		// compression
-			readInt32("Compression:");
+			compressionSwitch = readInt32("Compression:");
 			
 			//@76
 			
@@ -145,12 +194,12 @@
 			//@80
 			
 		// cases
-			readInt32("Number of Cases:");
+			numberOfCases = readInt32("Number of Cases:");
 			
 			//@84
 		
 		// compression bias
-			readDouble("Compression Bias:");
+			compressionBias = readDouble("Compression Bias:");
 			
 			//@92
 			
@@ -178,11 +227,18 @@
 */
 	void readMeta(){
 	
+		if(!silent){
+			printOut("Reading meta data...", "", "cyan");
+		}
+	
 		bool stop = false;
 		while (!stop) {
 		
-			printOut("-------------------------", "", "blue");
-			printOut("-------------------------", "", "blue");
+			if(debug){
+				printOut("-------------------------", "", "blue");
+				printOut("-------------------------", "", "blue");
+			}
+			
 			int recordType = readInt32("Record type:");
 			
 			switch (recordType) {
@@ -270,12 +326,24 @@
 											printOutErr("Error reading record type 7 subtype 11: number of data elements [%s] is not a multiple of 3.", intToStr32(size));
 											exitSavtocsv();
 										}
+									
+										//go through vars and set meta
+											variable_t * current = variablesList;
+											current = current->next;
 										
-										for(int i = 1; i <= count/3; ++i){
-											readInt32("Var Measure:");
-											readInt32("Var Cols:");
-											readInt32("Var Alignment:");
-										}
+											for(int i = 0; i < count/3; ++i){
+												
+												if(debug){
+													printOut("~~~Var Meta~~~", "", "magenta");
+													printOut("\n~~~Var Type: %s \n", intToStr32(current->type), "yellow");
+												}
+												current->measure =  readInt32("~~~Var Measure:");
+												current->cols =  readInt32("~~~Var Cols:");
+												current->alignment =  readInt32("~~~Var Alignment:");
+												
+												current = current->next;
+	
+											}
 										
 									break;
 								
@@ -396,6 +464,10 @@
 		//otherwise normal var
 			} else {
 				
+				addVariable(variablesList, typeCode);
+				
+				numberOfVariables++;
+				
 				// read label flag
 					int hasLabel = readInt32("---Var Has Label:");
 					//could throw exception here as missing label?
@@ -508,14 +580,182 @@
 			}
 	
 		// number of variables to add to?
-			int numberOfVariables = readInt32("+++Number of Variables:");
+			int numVars = readInt32("+++Number of Variables:");
 	
 		// variableRecord indexes
-			for (int i = 0; i < numberOfVariables; i++) {
+			for (int i = 0; i < numVars; i++) {
 				
 				readInt32("+++Var Index:");
 			
 			}
+	
+	}
+	
+	void dataToCsvLong(){
+	
+		int fileNumber = 1;
+		int caseid = 1;
+		int rowCount = 1;
+		
+		int cluster[8] = {0,0,0,0,0,0,0,0};
+		int clusterIndex = 8;
+		
+		int totalRows = numberOfVariables * numberOfCases;
+		int filesAmount;
+		
+		if(totalRows > 1000000){
+			filesAmount = (totalRows / 1000000) + 1;
+		} else {
+			filesAmount = 1;
+		}
+		FILE * csvs[filesAmount];
+		
+		char filename[100] = "";
+		
+		//first filename
+			strcat(filename, csv);
+			strcat(filename, intToStr32(fileNumber));
+			strcat(filename, ".csv");
+		
+		//first file
+			csvs[0] = fopen(filename, "w");
+		
+		if(!silent){
+			printOut("Building Long CSV:", "", "cyan");
+			printOut("\t%s", filename, "cyan");
+		}
+		
+		for(int i = 1; i <= numberOfCases; i++){
+			
+			//loop through vars, skipping head of list
+				//variable_t * current = variablesList;
+				//current = current->next;
+			
+				int variableId = 1;
+				for(int j = 0; j < numberOfVariables; j++){
+					
+					//current->type
+					
+					double numData;
+					bool insertNull = false;
+					
+					if(compressionSwitch > 0){
+					
+						if(clusterIndex > 7){
+						
+							cluster[0] = readIntByteNoOutput();
+							cluster[1] = readIntByteNoOutput();
+							cluster[2] = readIntByteNoOutput();
+							cluster[3] = readIntByteNoOutput();
+							cluster[4] = readIntByteNoOutput();
+							cluster[5] = readIntByteNoOutput();
+							cluster[6] = readIntByteNoOutput();
+							cluster[7] = readIntByteNoOutput();
+							
+							clusterIndex = 0;
+						
+						}
+						
+						// convert byte to an unsigned byte in an int
+							int byteValue = (0x000000FF & (int)cluster[clusterIndex]);
+							
+							clusterIndex++;
+						
+						switch (byteValue) {
+							
+							// skip this code
+								case COMPRESS_SKIP_CODE:
+								break;
+								
+							// end of file, no more data to follow. This should not happen.
+								case COMPRESS_END_OF_FILE:
+									//throw new \Exception("Error reading data: unexpected end of compressed data file (cluster code 252)");
+								break;
+								
+							// data cannot be compressed, the value follows the cluster
+								case COMPRESS_NOT_COMPRESSED:
+									numData = readDoubleNoOuput();
+								break;
+								
+							// all blanks
+								case COMPRESS_ALL_BLANKS:
+									numData = 0;
+								break;
+								
+							// system missing value
+								case COMPRESS_MISSING_VALUE:
+									//used to be 'NULL' but LOAD DATA INFILE requires \N instead, otherwise a '0' get's inserted instead
+									insertNull = true;
+								break;
+								
+							// 1-251 value is code minus the compression BIAS (normally always equal to 100)
+								default:
+									numData = byteValue - compressionBias;
+								break;
+							
+						}
+					
+					} else {
+						numData = readDoubleNoOuput();
+					}
+					
+					//write to file
+					
+						if(insertNull){
+							
+							fprintf(csvs[fileNumber-1],"%d,%d,%d,\\N\n",rowCount, caseid, variableId);
+						
+						} else {
+							
+							fprintf(csvs[fileNumber-1],"%d,%d,%d,%f\n",rowCount, caseid, variableId, numData);
+						
+						}
+					
+					//switch to new file
+					if(rowCount % 1000000 == 0){
+						
+						//close current file
+							fclose(csvs[fileNumber-1]);
+						
+						//make and open new file
+							fileNumber++;
+						
+							char filenameHere[50] = "";
+						
+							strcat(filenameHere, csv);
+							strcat(filenameHere, intToStr32(fileNumber));
+							strcat(filenameHere, ".sav");
+						
+							csvs[fileNumber-1] = fopen(filenameHere,"w");
+						
+						if(!silent){
+							printOut("Building Long CSV:", "", "cyan");
+							printOut("\t%s", filenameHere, "cyan");
+						}
+						
+					}
+					
+					//current = current->next;
+					variableId++;
+					rowCount++;
+				
+				}
+			
+			caseid++;
+		
+		}
+		
+		if(!silent){
+			printOut("Wrote %s rows.", intToStr32(totalRows), "cyan");
+			printOut("Wrote %s files.", intToStr32(filesAmount), "cyan");
+		}
+		
+		//close current file
+			fclose(csvs[fileNumber-1]);
+	
+	}
+	
+	void dataToCsvFlat(){
 	
 	}
 	
@@ -586,6 +826,21 @@
 	}
 	
 /**
+* Read 1 byte as an int
+* @return void
+*/
+	int readIntByteNoOutput(){
+		
+		//read 4 bytes into memory location of int32buffer
+		fread(&intByteBuffer, 1, 1, savPtr);
+		
+		cursor += 1;
+		
+		return intByteBuffer;
+		
+	}
+	
+/**
 * Read 4 bytes as an int 
 * @param char *msg Message to prepend to debug output
 * @return void
@@ -643,7 +898,7 @@
 * @param char *msg Message to prepend to debug output
 * @return void
 */
-	void readDouble(char *msg){
+	double readDouble(char *msg){
 		
 		fread(&flt64Buffer, 8, 1, savPtr);
 		
@@ -660,6 +915,26 @@
 			printf("\t<8 bytes read, %d bytes total>\n\n", cursor);
 		}
 		
+		return flt64Buffer;
+		
+	}
+	
+/**
+* Read 8 bytes as a double
+* @return void
+*/
+	double readDoubleNoOuput(){
+		
+		fread(&flt64Buffer, 8, 1, savPtr);
+		
+		cursor += 8;
+		
+		//if file been stored on a big endian system (as found in header), swap bytes for 64 bits (8 bytes) in the buffer
+		if(bigEndian){
+			__bswap_64(flt64Buffer);
+		}
+		
+		return flt64Buffer;
 		
 	}
 	

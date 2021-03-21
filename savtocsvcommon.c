@@ -3,6 +3,7 @@
 
 
 bool silent = false;
+bool longCsv = true;
 char *sav = NULL;
 char *csv = "out";
 int lineLimit = 0;
@@ -22,7 +23,7 @@ char ANSI_COLOR_RESET[] = "\x1b[0m";
 	void exitSavtocsv(){
 		
 		if(!silent){
-			printf("\n");
+			//printf("\n");
 		}
 		exit(EXIT_FAILURE);
 	
@@ -80,7 +81,7 @@ char ANSI_COLOR_RESET[] = "\x1b[0m";
 */
 	void printOut(char *str, char *bound, char *col){
 		
-		if(silent == false){
+		if(!silent){
 			colorSet(col);
 			printf(str, bound);
 			puts(ANSI_COLOR_RESET);
@@ -96,7 +97,7 @@ char ANSI_COLOR_RESET[] = "\x1b[0m";
 */
 	void printOutErr(char *str, char *bound){
 		
-		if(silent == false){
+		if(!silent){
 			fprintf(stderr, ANSI_COLOR_RED);
 			fprintf(stderr, str, bound);
 			fprintf(stderr, ANSI_COLOR_RESET);
