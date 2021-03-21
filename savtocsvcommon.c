@@ -1,7 +1,6 @@
 #include "common.h"
 #include "savtocsvcommon.h"
 
-
 bool silent = false;
 bool longCsv = true;
 char *sav = NULL;

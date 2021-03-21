@@ -261,7 +261,8 @@
 								int numberOfLines = readInt32("Number of Docs Vars:");
 							
 							// read the lines
-								for (int i = 0; i < numberOfLines; i++) {
+								int i;
+								for (i = 0; i < numberOfLines; i++) {
 									readOver(80, "Doc Content:");
 								}
 							
@@ -330,8 +331,9 @@
 										//go through vars and set meta
 											variable_t * current = variablesList;
 											current = current->next;
-										
-											for(int i = 0; i < count/3; ++i){
+											
+											int i;
+											for(i = 0; i < count/3; ++i){
 												
 												if(debug){
 													printOut("~~~Var Meta~~~", "", "magenta");
@@ -516,7 +518,8 @@
 				
 				// missing values
 					if (missingValueFormatCode != 0) {
-						for (int i = 0; i < abs(missingValueFormatCode); ++i) {
+						int i;
+						for (i = 0; i < abs(missingValueFormatCode); ++i) {
 							readInt64("---Missing Values:");
 						}
 					}
@@ -537,7 +540,8 @@
 			//@4
 	
 		// labels
-			for (int i = 0; i < numberOfLabels; i++) {
+			int i;
+			for (i = 0; i < numberOfLabels; i++) {
 	
 				// read the label value
 					readDouble("+++Value:");
@@ -583,7 +587,8 @@
 			int numVars = readInt32("+++Number of Variables:");
 	
 		// variableRecord indexes
-			for (int i = 0; i < numVars; i++) {
+			int j;
+			for (j = 0; j < numVars; j++) {
 				
 				readInt32("+++Var Index:");
 			
@@ -625,14 +630,16 @@
 			printOut("\t%s", filename, "cyan");
 		}
 		
-		for(int i = 1; i <= numberOfCases; i++){
+		int i;
+		for(i = 1; i <= numberOfCases; i++){
 			
 			//loop through vars, skipping head of list
 				//variable_t * current = variablesList;
 				//current = current->next;
 			
 				int variableId = 1;
-				for(int j = 0; j < numberOfVariables; j++){
+				int j;
+				for(j = 0; j < numberOfVariables; j++){
 					
 					//current->type
 					
@@ -724,7 +731,7 @@
 						
 							strcat(filenameHere, csv);
 							strcat(filenameHere, intToStr32(fileNumber));
-							strcat(filenameHere, ".sav");
+							strcat(filenameHere, ".csv");
 						
 							csvs[fileNumber-1] = fopen(filenameHere,"w");
 						
@@ -860,7 +867,7 @@
 		//output for debug info
 			if(debug && !silent){
 				printOut(msg, "", "yellow");
-				printOut("\t%d", (char *)int32Buffer, "magenta");
+				printOut("\t%d", intToStr32(int32Buffer), "magenta");
 				printf("\t<4 bytes read, %d bytes total>\n\n", cursor);
 			}
 		
