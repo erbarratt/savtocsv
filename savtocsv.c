@@ -32,48 +32,48 @@ void parseOpts(int argc, char *argv[]){
 	//check for version output
 	// If the first character of optstring is '-', then each nonoption argv-element is handled as if
 	// it were the argument of an option with character code 1. (This is used by programs that were written to expect options and other argv-elements in any order and that care about the ordering of the two.)
-	if(argc == 2){
-		
-		while ((opt = getopt(argc, argv, "-v")) != -1) {
-			if(opt == 'v'){
-				printf(ANSI_COLOR_GREEN);
-				printf("savtocsv ");
-				printf(ANSI_COLOR_RESET);
-				printf("version ");
-				printf(ANSI_COLOR_YELLOW);
-				printf("version 1.0 ");
-				printf(ANSI_COLOR_RESET);
-				printf("2021-03\n");
-				exitSavtocsv();
+		if(argc == 2){
+			
+			while ((opt = getopt(argc, argv, "-v")) != -1) {
+				if(opt == 'v'){
+					printf(ANSI_COLOR_GREEN);
+					printf("savtocsv ");
+					printf(ANSI_COLOR_RESET);
+					printf("version ");
+					printf(ANSI_COLOR_YELLOW);
+					printf("version 1.0 ");
+					printf(ANSI_COLOR_RESET);
+					printf("2021-03\n");
+					exitSavtocsv();
+				}
 			}
+			
 		}
-		
-	}
 	
 	//reset getopt index for next while loop
-	optind = 1;
+		optind = 1;
 	
 	//check for silent first
-	while ((opt = getopt(argc, argv, "-sfodl")) != -1) {
-		
-		if(opt == 's'){
-			silent = true;
+		while ((opt = getopt(argc, argv, "-sfodl")) != -1) {
+			
+			if(opt == 's'){
+				silent = true;
+			}
+			
 		}
-		
-	}
 	
 	//reset getopt index for next while loop
-	optind = 1;
+		optind = 1;
 	
 	//ullo
-	printOut("\n----------SAV To CSV----------", "", "green");
+		printOut("\n----------SAV To CSV----------", "", "green");
 	
 	//if it's not -v then is the num of args correct?
-	if(argc < 2){
-		printOutErr("Missing required options.", "");
-		printOutErr("Usage: savtocsv [-v] | [-f] [file...] [-o] [file...] [-l] [int] [-s]", "");
-		exitSavtocsv();
-	}
+		if(argc < 2){
+			printOutErr("Missing required options.", "");
+			printOutErr("Usage: savtocsv [-v] | [-f] [file...] [-o] [file...] [-l] [int] [-s]", "");
+			exitSavtocsv();
+		}
 	
 	while ((opt = getopt(argc, argv, "-f:o:l:svd")) != -1) {
 		
