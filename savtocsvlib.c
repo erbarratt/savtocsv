@@ -603,8 +603,8 @@
 		int totalRows = numberOfVariables * numberOfCases;
 		int filesAmount;
 		
-		if(totalRows > 1000000){
-			filesAmount = (totalRows / 1000000) + 1;
+		if(totalRows > lineLimit){
+			filesAmount = (totalRows / lineLimit) + 1;
 		} else {
 			filesAmount = 1;
 		}
@@ -712,7 +712,7 @@
 						}
 					
 					//switch to new file
-					if(rowCount % 1000000 == 0){
+					if(rowCount % lineLimit == 0){
 						
 						//close current file
 							fclose(csvs[fileNumber-1]);

@@ -142,8 +142,8 @@ void parseOpts(int argc, char *argv[]){
 	
 	//check line limit or set default
 	if(lineLimit == 0){
-		lineLimit = 100000;
-		char *lltxt = "100000";
+		lineLimit = 1000000;
+		char *lltxt = "1000000";
 		printOut("CSV Line Length default: \n\t%s", lltxt, "yellow");
 	}
 	
