@@ -629,6 +629,8 @@
 			printOut("\t%s", filename, "cyan");
 		}
 		
+		double numData = 0;
+		
 		int i;
 		for(i = 1; i <= numberOfCases; i++){
 			
@@ -642,7 +644,8 @@
 					
 					//current->type
 					
-					double numData;
+					numData = 0;
+					
 					bool insertNull = false;
 					
 					if(compressionSwitch > 0){
@@ -816,6 +819,8 @@
 			printOut("\t%s", filename, "cyan");
 		}
 		
+		double numData = 0;
+		
 		int i;
 		for(i = 1; i <= numberOfCases; i++){
 			
@@ -832,7 +837,7 @@
 					
 					//current->type
 					
-					double numData;
+					numData = 0;
 					bool insertNull = false;
 					
 					if(compressionSwitch > 0){
