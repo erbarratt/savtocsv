@@ -1024,7 +1024,7 @@
 		
 		//if file been stored on a big endian system (as found in header), swap bytes for 32 bits (4 bytes) in the buffer
 			if(bigEndian){
-				__bswap_32(int32Buffer);
+				bswap_32(int32Buffer);
 			}
 	
 		//output for debug info
@@ -1051,7 +1051,7 @@
 	
 		//if file been stored on a big endian system (as found in header), swap bytes for 64 bits (8 bytes) in the buffer
 			if(bigEndian){
-				__bswap_64(int64Buffer);
+				bswap_64(int64Buffer);
 			}
 		
 		if(debug && !silent){
@@ -1076,7 +1076,7 @@
 		
 		//if file been stored on a big endian system (as found in header), swap bytes for 64 bits (8 bytes) in the buffer
 		if(bigEndian){
-			__bswap_64(flt64Buffer);
+			bswap_64(flt64Buffer);
 		}
 		
 		if(debug && !silent){
@@ -1101,7 +1101,7 @@
 		
 		//if file been stored on a big endian system (as found in header), swap bytes for 64 bits (8 bytes) in the buffer
 		if(bigEndian){
-			__bswap_64(flt64Buffer);
+			bswap_64(flt64Buffer);
 		}
 		
 		return flt64Buffer;
