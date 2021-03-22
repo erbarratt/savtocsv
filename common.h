@@ -6,8 +6,3 @@
 #include <inttypes.h>
 #include <math.h>
 
-
-extern bool silent;
-extern bool debug;
-extern bool longCsv;
-
