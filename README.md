@@ -24,7 +24,13 @@ When finished, an executable called savtocsv will have been created. To cleanup:
 
 To call the program in it's current directory, use:
 
-<pre>./savtocsv -[options]</pre>
+<pre>./savtocsv [options] [arguments]</pre>
+
+<h3>Help</h3>
+
+The help option is exclusive - the help output will only run if -h is the sole option passed. Help lists all available options.
+
+<pre>./savtocsv -h</pre>
 
 <h3>Version</h3>
 
@@ -64,8 +70,20 @@ Use -d to enable Debug mode, which will output all information read by the progr
 
 <pre>./savtocsv  -f filename.sav -d</pre>
 
+<h3>Flat csv</h3>
+
+Use -F to output csv files as flat table style. Default is long format csv (many to many).
+
+<pre>./savtocsv  -f filename.sav -F</pre>
+
+<h3>Row index</h3>
+
+Use -R to output the row index as the first field in each line of the csv.
+
+<pre>./savtocsv  -f filename.sav -R</pre>
+
 <h3>Full example</h3>
 
-Set filename, output prefix and line limit, in silent mode.
+Set filename, output prefix and line limit, in silent mode, as a flat style csv including row indexes.
 
-<pre>./savtocsv  -f filename.sav -o prefix -l 5000000 -s</pre>
+<pre>./savtocsv  -f filename.sav -o prefix -l 5000000 -sFR</pre>
