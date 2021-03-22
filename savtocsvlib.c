@@ -43,12 +43,19 @@
 /** @var double flt64Buffer Buffer for storing 64 bit / 8 byte floating point numbers */
 	double flt64Buffer;
 	
+/** @var int compressionSwitch Compression on or not */
 	int compressionSwitch;
-	int numberOfCases;
+	
+/** @var double compressionBias Used to decode data */
 	double compressionBias;
 	
+/** @var int numberOfCases Num cases in sav file */
+	int numberOfCases = 0;
+	
+/** @var int numberOfVariables Num vars in sav file */
 	int numberOfVariables = 0;
 
+/** @var struct Variable Variable structure definition */
 	typedef struct Variable{
 		int type;
 		int measure;
@@ -57,36 +64,70 @@
 		struct Variable * next;
 	} variable_t;
 
+/** @var variable_t* variablesList Linked list of Variable structures */
 	variable_t * variablesList = NULL;
 
 /**
-* Main run through for file conversion
+* Close file
 * @return void
 */
-	void convertToCSV(char *filename){
-		openFile(filename);
+	void closeFile(){
+		fclose(savPtr);
+	}
+	
+
+/**
+* Print error, close file and exit
+* @return void
+*/
+	void exitAndCloseFile(char *str, char *bound){
+		printOutErr(str, bound);
 		closeFile();
+		exit(EXIT_FAILURE);
+	}
+	
+/**
+* Add a variable to the Variables linked list
+* @param variable_t * head Pointer to head of list
+* @param int type Variable typecode to add one creation
+* @return void
+*/
+	void addVariable(variable_t * head, int type) {
+	
+		variable_t * current = head;
+		
+		//find last element
+			while (current->next != NULL) {
+				current = current->next;
+			}
+		
+		//add new var
+			current->next = (variable_t *) malloc(sizeof(variable_t));
+			current->next->type = type;
+			current->next->measure = 0;
+			current->next->cols = 0;
+			current->next->alignment = 0;
+			current->next->next = NULL;
+		
 	}
 
 /**
-* Try to open the file passed in the -f option
+* Main run through method
 * @return void
 */
-	void openFile(char *filename){
+	void convertToCSV(char *filename){
 		
 		//try to open for read in binary mode
 			savPtr = fopen(filename, "rb");
 		
 		//file passed isn't sav file
 			if(strcmp(getFileExt(filename),"sav") != 0){
-				printOutErr("Unable to open file: %s", filename);
-				exit(1);
+				exitAndCloseFile("Unable to open file: %s", filename);
 			}
 		
 		//can't open file passed
 			else if(savPtr == NULL){
-				printOutErr("Unable to open file: %s", filename);
-				exit(1);
+				exitAndCloseFile("Unable to open file: %s", filename);
 			}
 			
 		//log
@@ -112,32 +153,8 @@
 			} else {
 				dataToCsvFlat();
 			}
-		
-	}
-	
-/**
-* Close file
-* @return void
-*/
-	void closeFile(){
-		fclose(savPtr);
-	}
-
-	void addVariable(variable_t * head, int type) {
-	
-		variable_t * current = head;
-		
-		while (current->next != NULL) {
-			current = current->next;
-		}
-		
-		//add new var
-		current->next = (variable_t *) malloc(sizeof(variable_t));
-		current->next->type = type;
-		current->next->measure = 0;
-		current->next->cols = 0;
-		current->next->alignment = 0;
-		current->next->next = NULL;
+			
+		closeFile();
 		
 	}
 	
@@ -148,7 +165,7 @@
 	void readHeader(){
 		
 		if(!silent){
-			printOut("Reading file header...", "", "cyan");
+			printOut("Reading file header:", "", "cyan");
 		}
 		
 		//reset file pointer location to start
@@ -158,8 +175,7 @@
 			readWord("File Identifier:");
 			
 			if (strcmp(wordBuffer, "$FL2") != 0){
-				printOutErr("File must begin with chars $FL2 for a valid SPSS .sav file.", "");
-				exit(EXIT_FAILURE);
+				exitAndCloseFile("File must begin with chars $FL2 for a valid SPSS .sav file.", "");
 			}
 			
 			//@4
@@ -218,6 +234,10 @@
 			readOver(3, "Padding:");
 			
 			//@176
+			
+		if(!silent){
+			printOut("\t%s Cases found", intToStr32(numberOfCases), "cyan");
+		}
 		
 	}
 	
@@ -228,7 +248,7 @@
 	void readMeta(){
 	
 		if(!silent){
-			printOut("Reading meta data...", "", "cyan");
+			printOut("Reading meta data:", "", "cyan");
 		}
 	
 		bool stop = false;
@@ -290,13 +310,11 @@
 								
 								// SPSS Record Type 7 Subtype 3 - Source system characteristics
 									case 3:
-										//readSpecificInfo(); //@32
 										readOver(32, "Source system characteristics:");
 									break;
 									
 								// SPSS Record Type 7 Subtype 4 - Source system floating pt constants
 									case 4:
-										//readSpecificFloatInfo(); //@24
 										readOver(24, "Source system floating pt constants:");
 									break;
 									
@@ -319,13 +337,12 @@
 									case 11:
 										
 										if (size != 4) {
-											printOutErr("Error reading record type 7 subtype 11: bad data element length [%s]. Expecting 4.", intToStr32(size));
-											exitSavtocsv();
+											exitAndCloseFile("Error reading record type 7 subtype 11: bad data element length [%s]. Expecting 4.", intToStr32(size));
 										}
 										
 										if ((count % 3) != 0) {
-											printOutErr("Error reading record type 7 subtype 11: number of data elements [%s] is not a multiple of 3.", intToStr32(size));
-											exitSavtocsv();
+											exitAndCloseFile("Error reading record type 7 subtype 11: number of data elements [%s] is not a multiple of 3.", intToStr32(size));
+
 										}
 									
 										//go through vars and set meta
@@ -428,17 +445,21 @@
 						int test = readInt32("Test for final rec type:");
 						
 						if (test != 0) {
-							//throw new \Exception("Error reading record type 999: Non-zero value found.");
+							exitAndCloseFile("Error reading record type 999: Non-zero value found.", "");
 						}
 						
 					break;
 					
 				default:
-					// throw new 	\Exception("Read error: invalid record type [" . $recordType . "]");
+					exitAndCloseFile("Read error: invalid record type [%s]", intToStr32(recordType));
 				break;
 			
 			}
 			
+		}
+		
+		if(!silent){
+			printOut("\t%s Variables found", intToStr32(numberOfVariables), "cyan");
 		}
 	
 	}
@@ -480,7 +501,7 @@
 					int missingValueFormatCode = readInt32("---Missing Format Code:");
 					
 					if (abs(missingValueFormatCode) > 3) {
-						//throw new \Exception("Error reading variable Record: invalid missing value format code [" . missingValueFormatCode . "]. Range is -3 to 3.");
+						exitAndCloseFile("Error reading variable Record: invalid missing value format code [%s]. Range is -3 to 3.", intToStr32(missingValueFormatCode));
 					}
 					
 					//@12
@@ -544,7 +565,7 @@
 			for (i = 0; i < numberOfLabels; i++) {
 	
 				// read the label value
-					readDouble("+++Value:");
+					double labelValue = readDouble("+++Value:");
 					//@8
 				
 				// read the length of a value label
@@ -553,7 +574,7 @@
 					int8_t max = 60;
 				
 					if (labelLength > max) {
-						//throw new    \Exception("The length of a value label({$labelLength}) must be less than 256: $!");
+						exitAndCloseFile("The length of a value label(%s) must be less than 60.", doubleToStr(labelValue));
 					}
 				
 				//need to ensure we read word-divisable amount of bytes
@@ -564,23 +585,13 @@
 					
 					readOver(labelLength+rem, "+++Label:");
 				
-				// read the label
-					//readOver(labelLength, "Value Label:");
-					
-				// value labels are stored in chunks of 8-bytes with space allocated
-				// for length+1 characters
-				// --> we need to skip unused bytes in the last chunk
-					//if ((labelLength + 1) % 8) {
-					//	readOver(8 - ((labelLength + 1) % 8), "Value Label Skip:");
-					//}
-				
 			}
 	
 		// read type 4 record (that must follow type 3!)
 		// record type
 			int recordTypeCode = readInt32("+++Record Type Code (Should be 4):");
 			if (recordTypeCode != 4) {
-				//throw new \Exception("Error reading Variable Index record: bad record type [" . $recordTypeCode . "]. Expecting Record Type 4.");
+				exitAndCloseFile("Error reading Variable Index record: bad record type [%s]. Expecting Record Type 4.", intToStr32(recordTypeCode));
 			}
 	
 		// number of variables to add to?
@@ -676,7 +687,7 @@
 								
 							// end of file, no more data to follow. This should not happen.
 								case COMPRESS_END_OF_FILE:
-									//throw new \Exception("Error reading data: unexpected end of compressed data file (cluster code 252)");
+									exitAndCloseFile("Error reading data: unexpected end of compressed data file (cluster code 252)", "");
 								break;
 								
 							// data cannot be compressed, the value follows the cluster
@@ -708,14 +719,30 @@
 					
 					//write to file
 					
-						if(insertNull){
+						if(includeRowIndex){
 							
-							fprintf(csvs[fileNumber-1],"%d,%d,%d,\\N\n",rowCount, caseid, variableId);
-						
+							if(insertNull){
+							
+								fprintf(csvs[fileNumber-1],"%d,%d,%d,\\N\n",rowCount, caseid, variableId);
+							
+							} else {
+								
+								fprintf(csvs[fileNumber-1],"%d,%d,%d,%f\n",rowCount, caseid, variableId, numData);
+							
+							}
+							
 						} else {
 							
-							fprintf(csvs[fileNumber-1],"%d,%d,%d,%f\n",rowCount, caseid, variableId, numData);
-						
+							if(insertNull){
+							
+								fprintf(csvs[fileNumber-1],"%d,%d,\\N\n", caseid, variableId);
+							
+							} else {
+								
+								fprintf(csvs[fileNumber-1],"%d,%d,%f\n", caseid, variableId, numData);
+							
+							}
+							
 						}
 					
 					//switch to new file
@@ -727,7 +754,7 @@
 						//make and open new file
 							fileNumber++;
 						
-							char filenameHere[50] = "";
+							char filenameHere[100] = "";
 						
 							strcat(filenameHere, csv);
 							strcat(filenameHere, intToStr32(fileNumber));
@@ -763,6 +790,170 @@
 	}
 	
 	void dataToCsvFlat(){
+	
+		int fileNumber = 1;
+		
+		int cluster[8] = {0,0,0,0,0,0,0,0};
+		int clusterIndex = 8;
+		
+		int filesAmount;
+		
+		if(numberOfCases > lineLimit){
+			filesAmount = (numberOfCases / lineLimit) + 1;
+		} else {
+			filesAmount = 1;
+		}
+		
+		FILE * csvs[filesAmount];
+		
+		char filename[100] = "";
+		
+		//first filename
+			strcat(filename, csv);
+			strcat(filename, intToStr32(fileNumber));
+			strcat(filename, ".csv");
+		
+		//first file
+			csvs[0] = fopen(filename, "w");
+		
+		if(!silent){
+			printOut("Building Flat CSV:", "", "cyan");
+			printOut("\t%s", filename, "cyan");
+		}
+		
+		int i;
+		for(i = 1; i <= numberOfCases; i++){
+			
+			//loop through vars, skipping head of list
+				//variable_t * current = variablesList;
+				//current = current->next;
+				
+				if(includeRowIndex){
+					fprintf(csvs[fileNumber-1],"%d,", i);
+				}
+				
+				int j;
+				for(j = 0; j < numberOfVariables; j++){
+					
+					//current->type
+					
+					double numData;
+					bool insertNull = false;
+					
+					if(compressionSwitch > 0){
+					
+						if(clusterIndex > 7){
+						
+							cluster[0] = readIntByteNoOutput();
+							cluster[1] = readIntByteNoOutput();
+							cluster[2] = readIntByteNoOutput();
+							cluster[3] = readIntByteNoOutput();
+							cluster[4] = readIntByteNoOutput();
+							cluster[5] = readIntByteNoOutput();
+							cluster[6] = readIntByteNoOutput();
+							cluster[7] = readIntByteNoOutput();
+							
+							clusterIndex = 0;
+						
+						}
+						
+						// convert byte to an unsigned byte in an int
+							int byteValue = (0x000000FF & (int)cluster[clusterIndex]);
+							
+							clusterIndex++;
+						
+						switch (byteValue) {
+							
+							// skip this code
+								case COMPRESS_SKIP_CODE:
+								break;
+								
+							// end of file, no more data to follow. This should not happen.
+								case COMPRESS_END_OF_FILE:
+									exitAndCloseFile("Error reading data: unexpected end of compressed data file (cluster code 252)", "");
+								break;
+								
+							// data cannot be compressed, the value follows the cluster
+								case COMPRESS_NOT_COMPRESSED:
+									numData = readDoubleNoOuput();
+								break;
+								
+							// all blanks
+								case COMPRESS_ALL_BLANKS:
+									numData = 0;
+								break;
+								
+							// system missing value
+								case COMPRESS_MISSING_VALUE:
+									//used to be 'NULL' but LOAD DATA INFILE requires \N instead, otherwise a '0' get's inserted instead
+									insertNull = true;
+								break;
+								
+							// 1-251 value is code minus the compression BIAS (normally always equal to 100)
+								default:
+									numData = byteValue - compressionBias;
+								break;
+							
+						}
+					
+					} else {
+						numData = readDoubleNoOuput();
+					}
+					
+					//write to file
+					
+						if(j > 0){
+							fprintf(csvs[fileNumber-1],",");
+						}
+					
+						if(insertNull){
+							
+							fprintf(csvs[fileNumber-1],"\\N");
+						
+						} else {
+							
+							fprintf(csvs[fileNumber-1],"%f",numData);
+						
+						}
+				
+				}
+				
+				//newline
+					fprintf(csvs[fileNumber-1],"\n");
+				
+				//switch to new file
+					if(i % lineLimit == 0){
+						
+						//close current file
+							fclose(csvs[fileNumber-1]);
+						
+						//make and open new file
+							fileNumber++;
+						
+							char filenameHere[100] = "";
+						
+							strcat(filenameHere, csv);
+							strcat(filenameHere, intToStr32(fileNumber));
+							strcat(filenameHere, ".csv");
+						
+							csvs[fileNumber-1] = fopen(filenameHere,"w");
+						
+						if(!silent){
+							printOut("Building Flat CSV:", "", "cyan");
+							printOut("\t%s", filenameHere, "cyan");
+						}
+						
+					}
+		
+		}
+		
+		if(!silent){
+			printOut("Wrote %s rows.", intToStr32(numberOfCases), "cyan");
+			printOut("Wrote %s files.", intToStr32(filesAmount), "cyan");
+		}
+		
+		//close current file
+			fclose(csvs[fileNumber-1]);
 	
 	}
 	
