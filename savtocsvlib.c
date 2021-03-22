@@ -766,8 +766,8 @@
 		}
 		
 		if(!silent){
-			printOut("Wrote %s rows.", intToStr32(totalRows), "cyan");
-			printOut("Wrote %s files.", intToStr32(filesAmount), "cyan");
+			printOut("Wrote %s rows.", intToStr32(totalRows), "green");
+			printOut("Wrote %s files.", intToStr32(filesAmount), "green");
 		}
 		
 		//close current file
@@ -943,8 +943,8 @@
 		}
 		
 		if(!silent){
-			printOut("Wrote %s rows.", intToStr32(numberOfCases), "cyan");
-			printOut("Wrote %s files.", intToStr32(filesAmount), "cyan");
+			printOut("Wrote %s rows.", intToStr32(numberOfCases), "green");
+			printOut("Wrote %s files.", intToStr32(filesAmount), "green");
 		}
 		
 		//close current file
