@@ -32,9 +32,11 @@ The version option is exclusive - the version output will only run if -v is the 
 
 <pre>./savtocsv -v</pre>
 
-<h3>Input file</h3>
+<h3>Input file*</h3>
 
 Use -f to define the input .sav file.
+
+*This option is required
 
 <pre>./savtocsv -f filename.sav</pre>
 
