@@ -28,7 +28,7 @@ To call the program in it's current directory, use:
 
 <h3>Version</h3>
 
-The version option is exclusive - the version output will only run if -v is the sole optiion passed.
+The version option is exclusive - the version output will only run if -v is the sole option passed.
 
 <pre>./savtocsv -v</pre>
 
