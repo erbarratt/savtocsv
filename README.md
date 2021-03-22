@@ -7,9 +7,14 @@ Installation has so far been tested on Debian (+Raspbian), Redhat (+CentOs 7) an
 
 Download the repository to your chosen directory then run the make command. This will read the makefile where gcc compile standards have been set. The makefile will create several .o files to combine into an executable, then remove the .o files.
 
-<pre># sudo curl -OL https://github.com/erbarratt/savtocsv/archive/refs/tags/savtocsv.1.5.5.tar.gz</pre>
-<pre># sudo tar -xvf savtocsv.1.5.5.tar.gz</pre>
-<pre># cd savtocsv-savtocsv.1.5.5</pre>
+<pre># sudo curl -OL https://github.com/erbarratt/savtocsv/archive/refs/tags/savtocsv.1.5.6.tar.gz</pre>
+
+or
+
+<pre># sudo wget https://github.com/erbarratt/savtocsv/archive/refs/tags/savtocsv.1.5.6.tar.gz</pre>
+
+<pre># sudo tar -xvf savtocsv.1.5.6.tar.gz</pre>
+<pre># cd savtocsv-savtocsv.1.5.6</pre>
 <pre># sudo make</pre>
 <pre># sudo chmod 755 savtocsv</pre>
 
@@ -26,7 +31,7 @@ Verify installation using the version option:
 
 Should output similar to:
 
-<pre>savtocsv version version 1.5.2 2021-03-22</pre>
+<pre>savtocsv version version 1.5.6 2021-03-22</pre>
 
 <h2>Usage</h2>
 
