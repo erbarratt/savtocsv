@@ -39,13 +39,13 @@ void parseOpts(int argc, char *argv[]){
 						printf("%s", ANSI_COLOR_RESET);
 						printf("version ");
 						printf("%s", ANSI_COLOR_YELLOW);
-						printf("version 1.5.4 ");
+						printf("version 1.5.5 ");
 						printf("%s", ANSI_COLOR_RESET);
 						printf("2021-03-22\n");
 						exit(0);
 					}
 					
-					if(opt == 'h'){
+					else if(opt == 'h'){
 						
 						printOut("\n----------SAV To CSV Help----------\n", "", "green");
 						
@@ -143,8 +143,8 @@ void parseOpts(int argc, char *argv[]){
 	//ullo
 		printOut("\n----------SAV To CSV----------", "", "green");
 	
-	//if it's not -v then is the num of args correct?
-		if(argc < 2){
+	//if it's not -v or -h then is the num of args correct?
+		if(argc <= 2){
 			printOutErr("Missing required options.", "");
 			printOutErr("Usage: savtocsv [-v] | [-f] [file...] [-o] [file...] [-l] [int] [-sdFR]", "");
 			exit(EXIT_FAILURE);
