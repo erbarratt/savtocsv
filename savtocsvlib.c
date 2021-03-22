@@ -510,7 +510,8 @@
 								rem = 0;
 							}
 							
-							readOver(labelLength+rem, "---Label:");
+							readOver(labelLength, "---Label:");
+							readOver(rem, "---label Skip:");
 						
 					}
 				
@@ -560,7 +561,8 @@
 						rem = 0;
 					}
 					
-					readOver(labelLength+rem, "+++Label:");
+					readOver(labelLength, "+++Label:");
+					readOver(rem, "+++Label Skip:");
 				
 			}
 	
@@ -584,6 +586,10 @@
 	
 	}
 	
+/**
+ * Convert data to long format csv's
+ * @return void
+ */
 	void dataToCsvLong(){
 	
 		int fileNumber = 1;
@@ -769,6 +775,10 @@
 	
 	}
 	
+/**
+ * Convert data to flat format csv's
+ * @return void
+ */
 	void dataToCsvFlat(){
 	
 		int fileNumber = 1;
@@ -957,18 +967,33 @@
 * @return void
 */
 	void readOver(int amt, char *msg){
-		
-		//read amounts into temp var
-			char temp[amt+1];
-			fread(&temp, amt, 1, savPtr);
-			cursor += amt;
-		
-		//output for debug info
-			if(debug && !silent){
-				printOut(msg, "", "yellow");
-				printOut("\t%s", temp, "magenta");
-				printf("\t<%d bytes read, %d bytes total>\n\n", amt, cursor);
+			
+		//only initialise with blank data if debug, otherwise doesn't matter.
+			if(debug){
+				
+				//read amounts into temp var
+				char temp[amt+1];
+			
+				int i;
+				for(i = 0; i < amt; i++){
+					temp[i] = ' ';
+				}
+				
+				temp[amt] = '\0';
+				
+				fread(&temp, amt, 1, savPtr);
+				
+				if(!silent){
+					printOut(msg, "", "yellow");
+					printOut("\t%s", temp, "magenta");
+					printf("\t<%d bytes read, %d bytes total>\n\n", amt, cursor);
+				}
+				
+			} else {
+				fseek(savPtr, amt, SEEK_CUR);
 			}
+			
+		cursor += amt;
 		
 	}
 	
@@ -1051,7 +1076,7 @@
 		//output for debug info
 			if(debug && !silent){
 				printOut(msg, "", "yellow");
-				printOut("\t%d", intToStr32(int32Buffer), "magenta");
+				printOut("\t%s", intToStr32(int32Buffer), "magenta");
 				printf("\t<4 bytes read, %d bytes total>\n\n", cursor);
 			}
 		
@@ -1068,7 +1093,7 @@
 	
 		fread(&int64Buffer, 8, 1, savPtr);
 	
-		cursor += 4;
+		cursor += 8;
 	
 		//if file been stored on a big endian system (as found in header), swap bytes for 64 bits (8 bytes) in the buffer
 			if(bigEndian){
