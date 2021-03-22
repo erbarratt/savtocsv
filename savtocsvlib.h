@@ -1,7 +1,8 @@
 
-void convertToCSV(char *filename);
-void openFile(char *filename);
 void closeFile();
+void exitAndCloseFile(char *str, char *bound);
+void addVariable(variable_t * head, int type);
+void convertToCSV(char *filename);
 void readHeader();
 void readMeta();
 void readVariable();
