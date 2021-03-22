@@ -9,7 +9,7 @@ Download the repository to your chosen directory then run the make command. This
 
 <pre># sudo curl -OL https://github.com/erbarratt/savtocsv/archive/refs/tags/savtocsv.1.4.1.tar.gz</pre>
 <pre># sudo tar -xvf savtocsv.1.4.1.tar.gz</pre>
-<pre># cd savtocsv-savtocsv.1.4.1/pre>
+<pre># cd savtocsv-savtocsv.1.4.1</pre>
 <pre># sudo make</pre>
 <pre># sudo chmod 755 savtocsv</pre>
 
