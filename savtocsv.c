@@ -40,7 +40,7 @@ void parseOpts(int argc, char *argv[]){
 					printf(ANSI_COLOR_RESET);
 					printf("version ");
 					printf(ANSI_COLOR_YELLOW);
-					printf("version 1.0 ");
+					printf("version 1.2 ");
 					printf(ANSI_COLOR_RESET);
 					printf("2021-03\n");
 					exitSavtocsv();
