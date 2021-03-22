@@ -91,6 +91,11 @@
 		
 		//try to open for read in binary mode
 			savPtr = fopen(filename, "rb");
+			
+		//file open?
+			if (savPtr == NULL) {
+				exitAndCloseFile("Unable to open file (permission denied, try sudo): %s", filename);
+			}
 		
 		//file passed isn't sav file
 			if(strcmp(getFileExt(filename),"sav") != 0){
@@ -607,6 +612,11 @@
 		
 		//first file
 			csvs[0] = fopen(filename, "w");
+			
+		//can we open and edit?
+			if (csvs[0] == NULL) {
+				exitAndCloseFile("Unable to open file (permission denied, try sudo): %s", filename);
+			}
 		
 		if(!silent){
 			printOut("Building Long CSV:", "", "cyan");
@@ -733,6 +743,10 @@
 							strcat(filenameHere, ".csv");
 						
 							csvs[fileNumber-1] = fopen(filenameHere,"w");
+							
+							if (csvs[fileNumber-1] == NULL) {
+								exitAndCloseFile("Unable to open file (permission denied, try sudo): %s", filenameHere);
+							}
 						
 						if(!silent){
 							printOut("Building Long CSV:", "", "cyan");
@@ -787,6 +801,11 @@
 		
 		//first file
 			csvs[0] = fopen(filename, "w");
+			
+		//try to open
+			if (csvs[0] == NULL) {
+				exitAndCloseFile("Unable to open file (permission denied, try sudo): %s", filename);
+			}
 		
 		if(!silent){
 			printOut("Building Flat CSV:", "", "cyan");
@@ -909,6 +928,10 @@
 							strcat(filenameHere, ".csv");
 						
 							csvs[fileNumber-1] = fopen(filenameHere,"w");
+							
+							if (csvs[fileNumber-1] == NULL) {
+								exitAndCloseFile("Unable to open file (permission denied, try sudo): %s", filenameHere);
+							}
 						
 						if(!silent){
 							printOut("Building Flat CSV:", "", "cyan");
