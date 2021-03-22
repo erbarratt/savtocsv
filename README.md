@@ -40,7 +40,7 @@ Use -f to define the input .sav file.
 
 <h3>Output file prefix</h3>
 
-Use -o to define the prefix for any output csv's. The program will append <x>.csv, where <x> is the number of the current csv file being written to, determined by the line limit option. Defaults to "out" (therefor out1.csv, out2.csv...).
+Use -o to define the prefix for any output csv's. The program will append x.csv, where x is the number of the current csv file being written to, determined by the line limit option. Defaults to "out" (therefor out1.csv, out2.csv...).
 
 <pre>./savtocsv  -f filename.sav -o prefix</pre>
 
