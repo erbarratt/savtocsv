@@ -1,5 +1,5 @@
 # savtocsv
-SPSS .sav to long format csv file (short format to come)
+SPSS .sav to short or long format csv file
 
 <h2>Install via compile savtocsv:</h2>
 
