@@ -703,27 +703,21 @@
 					
 						if(includeRowIndex){
 							
-							if(insertNull){
+							fprintf(csvs[fileNumber-1],"%d,",rowCount);
 							
-								fprintf(csvs[fileNumber-1],"%d,%d,%d,\\N\n",rowCount, caseid, variableId);
+						}
 							
-							} else {
-								
-								fprintf(csvs[fileNumber-1],"%d,%d,%d,%f\n",rowCount, caseid, variableId, numData);
+						if(insertNull){
+						
+							fprintf(csvs[fileNumber-1],"%d,%d,\\N\n", caseid, variableId);
+						
+						} else if (dubIsInt(numData)) {
 							
-							}
-							
+							fprintf(csvs[fileNumber-1],"%d,%d,%d\n", caseid, variableId, (int)numData);
+						
 						} else {
 							
-							if(insertNull){
-							
-								fprintf(csvs[fileNumber-1],"%d,%d,\\N\n", caseid, variableId);
-							
-							} else {
-								
-								fprintf(csvs[fileNumber-1],"%d,%d,%f\n", caseid, variableId, numData);
-							
-							}
+							fprintf(csvs[fileNumber-1],"%d,%d,%f\n", caseid, variableId, numData);
 							
 						}
 					
@@ -900,6 +894,10 @@
 						if(insertNull){
 							
 							fprintf(csvs[fileNumber-1],"\\N");
+						
+						} else if (dubIsInt(numData)) {
+							
+							fprintf(csvs[fileNumber-1],"%d",(int)numData);
 						
 						} else {
 							
