@@ -7,6 +7,8 @@ Installation has so far been tested on Debian (+Raspbian) and Redhat (+CentOs 7)
 
 Download the repository to your chosen directory then run the make command. This will read the makefile where gcc compile standards have been set. The makefile will create several .o files to combine into an executable, then remove the .o files.
 
+<pre># sudo wget https://github.com/erbarratt/savtocsv/archive/refs/tags/1.0.tar.gz</pre>
+<pre># sudo tar -xvf 1.0.tar.gz</pre>
 <pre># sudo make</pre>
 <pre># sudo chmod 755 savtocsv</pre>
 
