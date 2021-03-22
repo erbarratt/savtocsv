@@ -1,8 +1,10 @@
 #include "common.h"
 #include "savtocsvcommon.h"
 
+bool debug = false;
 bool silent = false;
 bool longCsv = true;
+bool includeRowIndex = false;
 char *sav = NULL;
 char *csv = "out";
 int lineLimit = 0;
@@ -14,19 +16,6 @@ char ANSI_COLOR_BLUE[] = "\x1b[34m";
 char ANSI_COLOR_MAGENTA[] = "\x1b[35m";
 char ANSI_COLOR_CYAN[] = "\x1b[36m";
 char ANSI_COLOR_RESET[] = "\x1b[0m";
-
-/**
-* Close the program with a newline
-* @return void
-*/
-	void exitSavtocsv(){
-		
-		if(!silent){
-			//printf("\n");
-		}
-		exit(EXIT_FAILURE);
-	
-	}
 
 /**
 * Set the colour output of the console
@@ -118,6 +107,19 @@ char ANSI_COLOR_RESET[] = "\x1b[0m";
 		
 	}
 
+/**
+* Turn 8 bit int into string
+* @param int8_t num The int
+* @return char*
+*/
+	char* intToStr8(int8_t num){
+	
+		int length = snprintf( NULL, 0, "%d", num );
+		char* str = malloc( length + 1 );
+		snprintf( str, length + 1, "%d", num );
+		return str;
+		
+	}
 /**
 * Turn 32 bit int into string
 * @param int num The int
