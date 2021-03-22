@@ -25,35 +25,35 @@ char ANSI_COLOR_RESET[] = "\x1b[0m";
 		
 		if (strcmp(col, "red") == 0){
 			
-			printf(ANSI_COLOR_RED);
+			printf("%s", ANSI_COLOR_RED);
 				
 		} else if (strcmp(col, "yellow") == 0){
 			
-			printf(ANSI_COLOR_YELLOW);
+			printf("%s", ANSI_COLOR_YELLOW);
 				
 		} else if (strcmp(col, "green") == 0){
 			
-			printf(ANSI_COLOR_GREEN);
+			printf("%s", ANSI_COLOR_GREEN);
 				
 		} else if (strcmp(col, "blue") == 0){
 			
-			printf(ANSI_COLOR_BLUE);
+			printf("%s", ANSI_COLOR_BLUE);
 				
 		} else if (strcmp(col, "cyan") == 0){
 			
-			printf(ANSI_COLOR_CYAN);
+			printf("%s", ANSI_COLOR_CYAN);
 				
 		} else if (strcmp(col, "magenta") == 0){
 			
-			printf(ANSI_COLOR_MAGENTA);
+			printf("%s", ANSI_COLOR_MAGENTA);
 			
 		} else if (strcmp(col, "reset") == 0){
 			
-			printf(ANSI_COLOR_RESET);
+			printf("%s", ANSI_COLOR_RESET);
 				
 		} else {
 			
-			printf(ANSI_COLOR_RESET);
+			printf("%s", ANSI_COLOR_RESET);
 				
 		}
 		
@@ -85,9 +85,9 @@ char ANSI_COLOR_RESET[] = "\x1b[0m";
 	void printOutErr(char *str, char *bound){
 		
 		if(!silent){
-			fprintf(stderr, ANSI_COLOR_RED);
+			fprintf(stderr, "%s", ANSI_COLOR_RED);
 			fprintf(stderr, str, bound);
-			fprintf(stderr, ANSI_COLOR_RESET);
+			fprintf(stderr, "%s", ANSI_COLOR_RESET);
 			fprintf(stderr,"\n");
 		}
 		
