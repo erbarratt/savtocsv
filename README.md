@@ -20,6 +20,14 @@ When finished, an executable called savtocsv will have been created. To cleanup:
 <pre># sudo rm makefile</pre>
 <pre># sudo rm *.txt</pre>
 
+Verify installation using the version option:
+
+<pre> ./savtocsv -v</pre>
+
+Should output similar to:
+
+<pre>savtocsv version version 1.4.1 2021-03-22</pre>
+
 <h2>Usage</h2>
 
 To call the program in it's current directory, use:
