@@ -34,13 +34,13 @@ void parseOpts(int argc, char *argv[]){
 				while ((opt = getopt(argc, argv, "-vh")) != -1) {
 					
 					if(opt == 'v'){
-						printf(ANSI_COLOR_GREEN);
+						printf("%s", ANSI_COLOR_GREEN);
 						printf("savtocsv ");
-						printf(ANSI_COLOR_RESET);
+						printf("%s", ANSI_COLOR_RESET);
 						printf("version ");
-						printf(ANSI_COLOR_YELLOW);
-						printf("version 1.5.3 ");
-						printf(ANSI_COLOR_RESET);
+						printf("%s", ANSI_COLOR_YELLOW);
+						printf("version 1.5.4 ");
+						printf("%s", ANSI_COLOR_RESET);
 						printf("2021-03-22\n");
 						exit(0);
 					}
@@ -49,72 +49,72 @@ void parseOpts(int argc, char *argv[]){
 						
 						printOut("\n----------SAV To CSV Help----------\n", "", "green");
 						
-						printf(ANSI_COLOR_YELLOW);
+						printf("%s", ANSI_COLOR_YELLOW);
 						printf("Usage:\n");
-						printf(ANSI_COLOR_RESET);
+						printf("%s", ANSI_COLOR_RESET);
 						
 						printOut("\tcommand [options] [arguments]\n", "", "magenta");
 						
-						printf(ANSI_COLOR_YELLOW);
+						printf("%s", ANSI_COLOR_YELLOW);
 						printf("Options:\n");
-						printf(ANSI_COLOR_RESET);
+						printf("%s", ANSI_COLOR_RESET);
 						
-						printf(ANSI_COLOR_GREEN);
+						printf("%s", ANSI_COLOR_GREEN);
 						printf("\t-f\t");
-						printf(ANSI_COLOR_RESET);
+						printf("%s", ANSI_COLOR_RESET);
 						printf("\tSet the input .sav filename (eg file.sav)\n");
 						
-						printf(ANSI_COLOR_GREEN);
+						printf("%s", ANSI_COLOR_GREEN);
 						printf("\t-o\t");
-						printf(ANSI_COLOR_RESET);
+						printf("%s", ANSI_COLOR_RESET);
 						printf("\tSet the output csv prefix (appended by x.csv where x is filenumber determined by Line Limit) ");
-						printf(ANSI_COLOR_YELLOW);
+						printf("%s", ANSI_COLOR_YELLOW);
 						printf("[default: out]\n");
-						printf(ANSI_COLOR_RESET);
+						printf("%s", ANSI_COLOR_RESET);
 						
-						printf(ANSI_COLOR_GREEN);
+						printf("%s", ANSI_COLOR_GREEN);
 						printf("\t-l\t");
-						printf(ANSI_COLOR_RESET);
+						printf("%s", ANSI_COLOR_RESET);
 						printf("\tSet Line Limit per csv file.  ");
-						printf(ANSI_COLOR_YELLOW);
+						printf("%s", ANSI_COLOR_YELLOW);
 						printf("[default: 1000000]\n");
-						printf(ANSI_COLOR_RESET);
+						printf("%s", ANSI_COLOR_RESET);
 						
-						printf(ANSI_COLOR_GREEN);
+						printf("%s", ANSI_COLOR_GREEN);
 						printf("\t-s\t");
-						printf(ANSI_COLOR_RESET);
+						printf("%s", ANSI_COLOR_RESET);
 						printf("\tSet silent mode for no output.\n");
-						printf(ANSI_COLOR_RESET);
+						printf("%s", ANSI_COLOR_RESET);
 						
-						printf(ANSI_COLOR_GREEN);
+						printf("%s", ANSI_COLOR_GREEN);
 						printf("\t-d\t");
-						printf(ANSI_COLOR_RESET);
+						printf("%s", ANSI_COLOR_RESET);
 						printf("\tSet debug mode for additional output. Will not output if Silent mode on.\n");
-						printf(ANSI_COLOR_RESET);
+						printf("%s", ANSI_COLOR_RESET);
 						
-						printf(ANSI_COLOR_GREEN);
+						printf("%s", ANSI_COLOR_GREEN);
 						printf("\t-F\t");
-						printf(ANSI_COLOR_RESET);
+						printf("%s", ANSI_COLOR_RESET);
 						printf("\tSet csv output format to flat instead of long.\n");
-						printf(ANSI_COLOR_RESET);
+						printf("%s", ANSI_COLOR_RESET);
 						
-						printf(ANSI_COLOR_GREEN);
+						printf("%s", ANSI_COLOR_GREEN);
 						printf("\t-R\t");
-						printf(ANSI_COLOR_RESET);
+						printf("%s", ANSI_COLOR_RESET);
 						printf("\tSet csv output to include row index.\n");
-						printf(ANSI_COLOR_RESET);
+						printf("%s", ANSI_COLOR_RESET);
 						
-						printf(ANSI_COLOR_GREEN);
+						printf("%s", ANSI_COLOR_GREEN);
 						printf("\t-v\t");
-						printf(ANSI_COLOR_RESET);
+						printf("%s", ANSI_COLOR_RESET);
 						printf("\tOutput version. Must be sole option.\n");
-						printf(ANSI_COLOR_RESET);
+						printf("%s", ANSI_COLOR_RESET);
 						
-						printf(ANSI_COLOR_GREEN);
+						printf("%s", ANSI_COLOR_GREEN);
 						printf("\t-h\t");
-						printf(ANSI_COLOR_RESET);
+						printf("%s", ANSI_COLOR_RESET);
 						printf("\tOutput help. Must be sole option.\n");
-						printf(ANSI_COLOR_RESET);
+						printf("%s", ANSI_COLOR_RESET);
 						
 						printf("\n");
 						
