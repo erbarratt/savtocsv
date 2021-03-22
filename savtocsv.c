@@ -4,8 +4,6 @@
 
 void parseOpts(int argc, char *argv[]);
 
-bool debug = false;
-
 int main(int argc, char *argv[]){
 	
 	//main parse of options before opening / reading file
@@ -13,6 +11,8 @@ int main(int argc, char *argv[]){
 	
 	//open the file or exit
 		convertToCSV(sav);
+	
+	printf("\n");
 	
 	return 0;
 	
@@ -28,24 +28,102 @@ void parseOpts(int argc, char *argv[]){
 	
 	int opt;
 	
-	//check for version output
 	// If the first character of optstring is '-', then each nonoption argv-element is handled as if
 	// it were the argument of an option with character code 1. (This is used by programs that were written to expect options and other argv-elements in any order and that care about the ordering of the two.)
 		if(argc == 2){
 			
-			while ((opt = getopt(argc, argv, "-v")) != -1) {
-				if(opt == 'v'){
-					printf(ANSI_COLOR_GREEN);
-					printf("savtocsv ");
-					printf(ANSI_COLOR_RESET);
-					printf("version ");
-					printf(ANSI_COLOR_YELLOW);
-					printf("version 1.2 ");
-					printf(ANSI_COLOR_RESET);
-					printf("2021-03\n");
-					exitSavtocsv();
+			//check for version output or help
+				while ((opt = getopt(argc, argv, "-vh")) != -1) {
+					
+					if(opt == 'v'){
+						printf(ANSI_COLOR_GREEN);
+						printf("savtocsv ");
+						printf(ANSI_COLOR_RESET);
+						printf("version ");
+						printf(ANSI_COLOR_YELLOW);
+						printf("version 1.2 ");
+						printf(ANSI_COLOR_RESET);
+						printf("2021-03\n");
+						exit(0);
+					}
+					
+					if(opt == 'h'){
+						
+						printOut("\n----------SAV To CSV Help----------\n", "", "green");
+						
+						printf(ANSI_COLOR_YELLOW);
+						printf("Usage:\n");
+						printf(ANSI_COLOR_RESET);
+						
+						printOut("\tcommand [options] [arguments]\n", "", "magenta");
+						
+						printf(ANSI_COLOR_YELLOW);
+						printf("Options:\n");
+						printf(ANSI_COLOR_RESET);
+						
+						printf(ANSI_COLOR_GREEN);
+						printf("\t-f\t");
+						printf(ANSI_COLOR_RESET);
+						printf("\tSet the input .sav filename (eg file.sav)\n");
+						
+						printf(ANSI_COLOR_GREEN);
+						printf("\t-o\t");
+						printf(ANSI_COLOR_RESET);
+						printf("\tSet the output csv prefix (appended by x.csv where x is filenumber determined by Line Limit) ");
+						printf(ANSI_COLOR_YELLOW);
+						printf("[default: out]\n");
+						printf(ANSI_COLOR_RESET);
+						
+						printf(ANSI_COLOR_GREEN);
+						printf("\t-l\t");
+						printf(ANSI_COLOR_RESET);
+						printf("\tSet Line Limit per csv file.  ");
+						printf(ANSI_COLOR_YELLOW);
+						printf("[default: 1000000]\n");
+						printf(ANSI_COLOR_RESET);
+						
+						printf(ANSI_COLOR_GREEN);
+						printf("\t-s\t");
+						printf(ANSI_COLOR_RESET);
+						printf("\tSet silent mode for no output.\n");
+						printf(ANSI_COLOR_RESET);
+						
+						printf(ANSI_COLOR_GREEN);
+						printf("\t-d\t");
+						printf(ANSI_COLOR_RESET);
+						printf("\tSet debug mode for additional output. Will not output if Silent mode on.\n");
+						printf(ANSI_COLOR_RESET);
+						
+						printf(ANSI_COLOR_GREEN);
+						printf("\t-F\t");
+						printf(ANSI_COLOR_RESET);
+						printf("\tSet csv output format to flat instead of long.\n");
+						printf(ANSI_COLOR_RESET);
+						
+						printf(ANSI_COLOR_GREEN);
+						printf("\t-R\t");
+						printf(ANSI_COLOR_RESET);
+						printf("\tSet csv output to include row index.\n");
+						printf(ANSI_COLOR_RESET);
+						
+						printf(ANSI_COLOR_GREEN);
+						printf("\t-v\t");
+						printf(ANSI_COLOR_RESET);
+						printf("\tOutput version. Must be sole option.\n");
+						printf(ANSI_COLOR_RESET);
+						
+						printf(ANSI_COLOR_GREEN);
+						printf("\t-h\t");
+						printf(ANSI_COLOR_RESET);
+						printf("\tOutput help. Must be sole option.\n");
+						printf(ANSI_COLOR_RESET);
+						
+						printf("\n");
+						
+						exit(0);
+					}
+					
 				}
-			}
 			
 		}
 	
@@ -53,7 +131,7 @@ void parseOpts(int argc, char *argv[]){
 		optind = 1;
 	
 	//check for silent first
-		while ((opt = getopt(argc, argv, "-sfodl")) != -1) {
+		while ((opt = getopt(argc, argv, "-sfoldFR")) != -1) {
 			
 			if(opt == 's'){
 				silent = true;
@@ -70,66 +148,75 @@ void parseOpts(int argc, char *argv[]){
 	//if it's not -v then is the num of args correct?
 		if(argc < 2){
 			printOutErr("Missing required options.", "");
-			printOutErr("Usage: savtocsv [-v] | [-f] [file...] [-o] [file...] [-l] [int] [-s]", "");
-			exitSavtocsv();
+			printOutErr("Usage: savtocsv [-v] | [-f] [file...] [-o] [file...] [-l] [int] [-sdFR]", "");
+			exit(EXIT_FAILURE);
 		}
 	
-	while ((opt = getopt(argc, argv, "-f:o:l:svd")) != -1) {
-		
-		switch (opt) {
+	//go through normal options
+		while ((opt = getopt(argc, argv, "-f:o:l:svdFR")) != -1) {
 			
-			//get file pointer
-				case 'f':
-					sav = optarg;
-					printOut("Input file set: \n\t%s", optarg, "magenta");
-				break;
+			switch (opt) {
 				
-			//get output filename
-				case 'o':
-					csv = optarg;
-				break;
-				
-			//silent switch for stdout
-				case 's':
-					silent = true;
-				break;
-				
-			//debug switch for stdout
-				case 'd':
-					debug = true;
-				break;
-				
-			//how pany lines per csv?
-				case 'l':
+				//get file pointer
+					case 'f':
+						sav = optarg;
+						printOut("Input file set: \n\t%s", optarg, "magenta");
+					break;
 					
-					lineLimit = atoi(optarg);
-					if(lineLimit == 0){
-						printOutErr("-l argument must be number", optarg);
-						exitSavtocsv();
-					} else {
-						printOut("CSV Line Length set to: \n\t%s", optarg, "magenta");
-					}
-				
-				break;
-				
-			//option not in optstring
-				case '?':
+				//get output filename
+					case 'o':
+						csv = optarg;
+					break;
 					
-					printOutErr("Option not in option list of -f -o -l", "");
-					exitSavtocsv();
+				//silent switch for stdout
+					case 's':
+						silent = true;
+					break;
+					
+				//debug switch for stdout
+					case 'd':
+						debug = true;
+					break;
+					
+				//csv file format
+					case 'F':
+						longCsv = false;
+					break;
+					
+				//output row index for each row
+					case 'R':
+						includeRowIndex = true;
+					break;
+					
+				//how pany lines per csv?
+					case 'l':
+						
+						lineLimit = atoi(optarg);
+						if(lineLimit == 0){
+							printOutErr("-l argument must be number", optarg);
+							exit(EXIT_FAILURE);
+						} else {
+							printOut("CSV Line Length set to: \n\t%s", optarg, "magenta");
+						}
+					
+					break;
+					
+				//option not in optstring
+					case '?':
+						
+						printOutErr("Option not in option list of -f -o -l", "");
+						exit(EXIT_FAILURE);
+					
+					break;
 				
-				break;
+			}
 			
 		}
-		
-	}
-	
-	
 	
 	//check sav file option
 		if(sav == NULL){
 			printOutErr("Missing required option -f", "");
-			exitSavtocsv();
+			exit(EXIT_FAILURE);
 		}
 	
 	//output csv prefix
@@ -144,6 +231,20 @@ void parseOpts(int argc, char *argv[]){
 			lineLimit = 1000000;
 			char *lltxt = "1000000";
 			printOut("CSV Line Length default: \n\t%s", lltxt, "yellow");
+		}
+		
+	//flat file or long file
+		if(longCsv){
+			printOut("CSV file format default: \n\tLong.", "", "yellow");
+		} else {
+			printOut("CSV file format set: \n\tFlat", "", "magenta");
+		}
+	
+	//flat file or long file
+		if(!includeRowIndex){
+			printOut("CSV include row index default: \n\tFALSE.", "", "yellow");
+		} else {
+			printOut("CSV include row index set: \n\tTRUE", "", "magenta");
 		}
 	
 }
