@@ -105,6 +105,16 @@ char ANSI_COLOR_RESET[] = "\x1b[0m";
 		return dot + 1;
 		
 	}
+	
+/**
+* Check if double can safely be treated as int
+* @param double val The double
+* @return bool
+*/
+	bool dubIsInt(double val){
+		int truncated = (int)val;
+		return (val == truncated);
+	}
 
 /**
 * Turn 8 bit int into string
