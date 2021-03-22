@@ -1,6 +1,4 @@
-#include "common.h"
 #include "savtocsvlib.h"
-#include "savtocsvcommon.h"
 
 void parseOpts(int argc, char *argv[]);
 
