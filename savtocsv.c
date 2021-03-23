@@ -201,11 +201,9 @@ void parseOpts(int argc, char *argv[]){
 					
 				//option not in optstring
 					case '?':
-						
+					default:
 						printOutErr("Option not in option list of -f -o -l", "");
 						exit(EXIT_FAILURE);
-					
-					break;
 				
 			}
 			
