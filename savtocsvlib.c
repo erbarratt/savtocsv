@@ -99,7 +99,7 @@
 		
 		//file passed isn't sav file
 			if(strcmp(getFileExt(filename),"sav") != 0){
-				exitAndCloseFile("Unable to open file: %s", filename);
+				exitAndCloseFile("File not a .sav file: %s", filename);
 			}
 		
 		//can't open file passed
@@ -592,26 +592,40 @@
  */
 	void dataToCsvLong(){
 	
-		int fileNumber = 1;
-		int caseid = 1;
-		int rowCount = 1;
+		//initialise counters for the loops
+			int fileNumber = 1;
+			int caseid = 1;
+			int rowCount = 1;
 		
-		int cluster[8] = {0,0,0,0,0,0,0,0};
-		int clusterIndex = 8;
+		//cluster for compression reads
+			int cluster[8] = {0,0,0,0,0,0,0,0};
+			int clusterIndex = 8;
 		
-		int totalRows = numberOfVariables * numberOfCases;
-		int filesAmount;
-		
-		if(totalRows > lineLimit){
-			filesAmount = (totalRows / lineLimit) + 1;
-		} else {
-			filesAmount = 1;
-		}
-		FILE * csvs[filesAmount];
-		
-		char filename[100] = "";
+		//how many rows overall?
+			int totalRows = numberOfVariables * numberOfCases;
+			
+		//progress tracking
+			int progressDivision;
+			int progressCount = 0;
+			
+			if(totalRows < lineLimit){
+				progressDivision = totalRows / 20;
+			} else {
+				progressDivision = lineLimit / 20;
+			}
+			
+		//work out files and file pointers
+			int filesAmount;
+			
+			if(totalRows > lineLimit){
+				filesAmount = (totalRows / lineLimit) + 1;
+			} else {
+				filesAmount = 1;
+			}
+			FILE * csvs[filesAmount];
 		
 		//first filename
+			char filename[100] = "";
 			strcat(filename, csv);
 			strcat(filename, intToStr32(fileNumber));
 			strcat(filename, ".csv");
@@ -629,7 +643,7 @@
 			printOut("\t%s", filename, "cyan");
 		}
 		
-		double numData = 0;
+		double numData;
 		
 		int i;
 		for(i = 1; i <= numberOfCases; i++){
@@ -735,6 +749,17 @@
 						
 						//close current file
 							fclose(csvs[fileNumber-1]);
+							
+						//finish progressCount output
+							if(progressCount < 20 && !silent){
+								int x;
+								for(x = 0; x <= (20 - progressCount); x++){
+									printf("#");
+								}
+								fflush(stdout);
+							}
+							
+							progressCount = 0;
 						
 						//make and open new file
 							fileNumber++;
@@ -752,10 +777,19 @@
 							}
 						
 						if(!silent){
-							printOut("Building Long CSV:", "", "cyan");
+							printOut("\nBuilding Long CSV:", "", "cyan");
 							printOut("\t%s", filenameHere, "cyan");
 						}
 						
+					} else if (rowCount % progressDivision == 0){
+					
+						if(!silent){
+							printf("#");
+							fflush(stdout);
+						}
+						
+						progressCount++;
+					
 					}
 					
 					//current = current->next;
@@ -768,8 +802,17 @@
 		
 		}
 		
+		//finish progressCount output
+			if(progressCount < 20 && !silent){
+				int x;
+				for(x = 0; x <= (20 - progressCount); x++){
+					printf("#");
+				}
+				fflush(stdout);
+			}
+		
 		if(!silent){
-			printOut("Wrote %s rows.", intToStr32(totalRows), "green");
+			printOut("\nWrote %s rows.", intToStr32(totalRows), "green");
 			printOut("Wrote %s files.", intToStr32(filesAmount), "green");
 		}
 		
@@ -786,22 +829,33 @@
 	
 		int fileNumber = 1;
 		
-		int cluster[8] = {0,0,0,0,0,0,0,0};
-		int clusterIndex = 8;
+		//cluster for compression reads
+			int cluster[8] = {0,0,0,0,0,0,0,0};
+			int clusterIndex = 8;
 		
-		int filesAmount;
+		//progress tracking
+			int progressDivision;
+			int progressCount = 0;
+			
+			if(numberOfCases < lineLimit){
+				progressDivision = numberOfCases / 20;
+			} else {
+				progressDivision = lineLimit / 20;
+			}
 		
-		if(numberOfCases > lineLimit){
-			filesAmount = (numberOfCases / lineLimit) + 1;
-		} else {
-			filesAmount = 1;
-		}
-		
-		FILE * csvs[filesAmount];
-		
-		char filename[100] = "";
+		//work out files and file pointers
+			int filesAmount;
+			
+			if(numberOfCases > lineLimit){
+				filesAmount = (numberOfCases / lineLimit) + 1;
+			} else {
+				filesAmount = 1;
+			}
+			
+			FILE * csvs[filesAmount];
 		
 		//first filename
+			char filename[100] = "";
 			strcat(filename, csv);
 			strcat(filename, intToStr32(fileNumber));
 			strcat(filename, ".csv");
@@ -819,7 +873,7 @@
 			printOut("\t%s", filename, "cyan");
 		}
 		
-		double numData = 0;
+		double numData;
 		
 		int i;
 		for(i = 1; i <= numberOfCases; i++){
@@ -930,6 +984,17 @@
 						
 						//close current file
 							fclose(csvs[fileNumber-1]);
+							
+						//finish progressCount output
+							if(progressCount < 20 && !silent){
+								int x;
+								for(x = 0; x <= (20 - progressCount); x++){
+									printf("#");
+								}
+								fflush(stdout);
+							}
+							
+							progressCount = 0;
 						
 						//make and open new file
 							fileNumber++;
@@ -947,16 +1012,34 @@
 							}
 						
 						if(!silent){
-							printOut("Building Flat CSV:", "", "cyan");
+							printOut("\nBuilding Flat CSV:", "", "cyan");
 							printOut("\t%s", filenameHere, "cyan");
 						}
 						
+					} else if (i % progressDivision == 0){
+					
+						if(!silent){
+							printf("#");
+							fflush(stdout);
+						}
+						
+						progressCount++;
+					
 					}
 		
 		}
 		
+		//finish progressCount output
+			if(progressCount < 20 && !silent){
+				int x;
+				for(x = 0; x <= (20 - progressCount); x++){
+					printf("#");
+				}
+				fflush(stdout);
+			}
+		
 		if(!silent){
-			printOut("Wrote %s rows.", intToStr32(numberOfCases), "green");
+			printOut("\nWrote %s rows.", intToStr32(numberOfCases), "green");
 			printOut("Wrote %s files.", intToStr32(filesAmount), "green");
 		}
 		
@@ -986,7 +1069,11 @@
 				
 				temp[amt] = '\0';
 				
-				fread(&temp, amt, 1, savPtr);
+				size_t read = fread(&temp, amt, 1, savPtr);
+				
+				if(read != 4){
+					exitAndCloseFile("Failed to read %d bytes in readOver()", intToStr32(amt));
+				}
 				
 				if(!silent){
 					printOut(msg, "", "yellow");
@@ -1010,7 +1097,11 @@
 	void readWord(char *msg){
 	
 		//read into mem loc of word buffer. Word buffer always 4 in length, so no need to clear
-			fread(&wordBuffer, 4, 1, savPtr);
+			size_t read = fread(&wordBuffer, 4, 1, savPtr);
+			
+			if(read != 1){
+				exitAndCloseFile("Failed to read 4 bytes in readWord()", "");
+			}
 	
 			cursor += 4;
 	
@@ -1031,7 +1122,11 @@
 	int readIntByte(char *msg){
 		
 		//read 4 bytes into memory location of int32buffer
-		fread(&intByteBuffer, 1, 1, savPtr);
+		size_t read = fread(&intByteBuffer, 1, 1, savPtr);
+		
+		if(read != 1){
+			exitAndCloseFile("Failed to read 1 bytes in readIntByte()", "");
+		}
 		
 		cursor += 1;
 		
@@ -1053,7 +1148,11 @@
 	int readIntByteNoOutput(){
 		
 		//read 4 bytes into memory location of int32buffer
-		fread(&intByteBuffer, 1, 1, savPtr);
+		size_t read = fread(&intByteBuffer, 1, 1, savPtr);
+		
+		if(read != 1){
+			exitAndCloseFile("Failed to read 1 bytes in readIntByteNoOutput()", "");
+		}
 		
 		cursor += 1;
 		
@@ -1069,7 +1168,11 @@
 	int readInt32(char *msg){
 	
 		//read 4 bytes into memory location of int32buffer
-			fread(&int32Buffer, 4, 1, savPtr);
+			size_t read = fread(&int32Buffer, 4, 1, savPtr);
+	
+			if(read != 1){
+				exitAndCloseFile("Failed to read 4 bytes in readInt32()", "");
+			}
 	
 			cursor += 4;
 		
@@ -1096,7 +1199,11 @@
 */
 	void readInt64(char *msg){
 	
-		fread(&int64Buffer, 8, 1, savPtr);
+		size_t read = fread(&int64Buffer, 8, 1, savPtr);
+		
+		if(read != 1){
+			exitAndCloseFile("Failed to read 8 bytes in readInt64()", "");
+		}
 	
 		cursor += 8;
 	
@@ -1121,7 +1228,11 @@
 */
 	double readDouble(char *msg){
 		
-		fread(&flt64Buffer, 8, 1, savPtr);
+		size_t read = fread(&flt64Buffer, 8, 1, savPtr);
+		
+		if(read != 1){
+			exitAndCloseFile("Failed to read 8 bytes in readDouble()", "");
+		}
 		
 		cursor += 8;
 		
@@ -1146,7 +1257,11 @@
 */
 	double readDoubleNoOuput(){
 		
-		fread(&flt64Buffer, 8, 1, savPtr);
+		size_t read = fread(&flt64Buffer, 8, 1, savPtr);
+		
+		if(read != 1){
+			exitAndCloseFile("Failed to read 8 bytes in readDoubleNoOutput()", "");
+		}
 		
 		cursor += 8;
 		

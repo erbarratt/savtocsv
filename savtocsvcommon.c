@@ -47,10 +47,6 @@ char ANSI_COLOR_RESET[] = "\x1b[0m";
 			
 			printf("%s", ANSI_COLOR_MAGENTA);
 			
-		} else if (strcmp(col, "reset") == 0){
-			
-			printf("%s", ANSI_COLOR_RESET);
-				
 		} else {
 			
 			printf("%s", ANSI_COLOR_RESET);
@@ -129,6 +125,7 @@ char ANSI_COLOR_RESET[] = "\x1b[0m";
 		return str;
 		
 	}
+	
 /**
 * Turn 32 bit int into string
 * @param int num The int
