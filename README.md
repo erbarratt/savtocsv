@@ -3,7 +3,7 @@ SPSS .sav to short or long format csv file
 
 <h2>Install via compile savtocsv:</h2>
 
-Installation has so far been tested on Debian (+Raspbian), Redhat (+CentOs 7) and macOS Catalina (10.15.7)
+Installation has so far been tested on Debian (+Raspbian, +Ubuntu 20.04), Redhat (+CentOs 7) and macOS Catalina (10.15.7)
 
 Download the repository to your chosen directory then run the make command. This will read the makefile where gcc compile standards have been set. The makefile will create several .o files to combine into an executable, then remove the .o files.
 
