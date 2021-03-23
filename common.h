@@ -4,6 +4,10 @@
 #include <string.h>
 #include <unistd.h>
 #include <inttypes.h>
+#include <math.h>
+
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
 
 #ifdef _MSC_VER
 

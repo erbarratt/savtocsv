@@ -64,7 +64,7 @@
 * @param int type Variable typecode to add one creation
 * @return void
 */
-	void addVariable(struct Variable * head, int type) {
+	void addVariable(struct Variable * head, int type, int writeFormatCode) {
 	
 		struct Variable * current = head;
 		
@@ -79,6 +79,7 @@
 			current->next->measure = 0;
 			current->next->cols = 0;
 			current->next->alignment = 0;
+			current->next->writeFormatCode = writeFormatCode;
 			current->next->next = NULL;
 		
 	}
@@ -469,8 +470,6 @@
 		//otherwise normal var
 			} else {
 				
-				addVariable(variablesList, typeCode);
-				
 				numberOfVariables++;
 				
 				// read label flag
@@ -494,7 +493,7 @@
 					//@16
 				
 				// read write format code
-					readInt32("---Write Format Code:");
+					int writeFormatCode = readInt32("---Write Format Code:");
 				
 					//@20
 				
@@ -527,6 +526,8 @@
 							readInt64("---Missing Values:");
 						}
 					}
+					
+					addVariable(variablesList, typeCode, writeFormatCode);
 				
 			}
 		
@@ -654,18 +655,113 @@
 		for(i = 1; i <= numberOfCases; i++){
 			
 			//loop through vars, skipping head of list
-				//variable_t * current = variablesList;
-				//current = current->next;
+				struct Variable * current = variablesList;
+				current = current->next;
 			
 				int variableId = 1;
 				int j;
 				for(j = 0; j < numberOfVariables; j++){
 					
-					//current->type
+					if(current->type != 0){
 					
-					numData = 0;
+						int charactersToRead = (current->writeFormatCode >> 16) & 0xFF; //byte 2
+						
+						double blocksToRead = floorf( (((float)charactersToRead - 1) / 8) + 1 );
+						
+						while (blocksToRead > 0) {
+							
+							if (compressionSwitch > 0) {
+							
+								if(clusterIndex > 7){
+						
+									cluster[0] = readIntByteNoOutput();
+									cluster[1] = readIntByteNoOutput();
+									cluster[2] = readIntByteNoOutput();
+									cluster[3] = readIntByteNoOutput();
+									cluster[4] = readIntByteNoOutput();
+									cluster[5] = readIntByteNoOutput();
+									cluster[6] = readIntByteNoOutput();
+									cluster[7] = readIntByteNoOutput();
+									
+									clusterIndex = 0;
+								
+								}
+								
+								// convert byte to an unsigned byte in an int
+									int byteValue = (0x000000FF & (int)cluster[clusterIndex]);
+							
+									clusterIndex++;
+								
+								switch (byteValue) {
+									
+									// skip this code
+										case COMPRESS_SKIP_CODE:
+									// all blanks
+										case COMPRESS_ALL_BLANKS:
+										break;
+									
+									// end of file, no more data to follow. This should not happen.
+										case COMPRESS_END_OF_FILE:
+											exitAndCloseFile("Error reading data: unexpected end of compressed data file (cluster code 252)", "");
+										break;
+										
+									// data cannot be compressed, the value follows the cluster
+										case COMPRESS_NOT_COMPRESSED:
+										
+											{
+										
+												// read a maximum of 8 characters but could be less if this is the last block
+													size_t blockStringLength = (size_t)MIN(8, (float)charactersToRead);
+													
+												// append to existing value
+													readOver((size_t)blockStringLength, "");
+													
+												// if this is the last block, skip the remaining dummy byte(s) (in the block of 8 bytes)
+													if (charactersToRead < 8) {
+														readOver((size_t)(8 - charactersToRead), "");
+													}
+												// update the characters counter
+													charactersToRead -= (int)blockStringLength;
+												
+											}
+												
+										break;
+									
+									// system missing value
+										case COMPRESS_MISSING_VALUE:
+											exitAndCloseFile("Error reading data: unexpected SYSMISS for string variable", "");
+										break;
+									
+									// 1-251 value is code minus the compression BIAS (normally always equal to 100)
+										default:
+											exitAndCloseFile("Error reading data: unexpected compression code for string variable", "");
+										break;
+								}
+							
+							//UNCOMPRESSED DATA
+								} else {
+								
+									// read a maximum of 8 characters but could be less if this is the last block
+										size_t blockStringLength = (size_t)MIN(8, (float)charactersToRead);
+										
+									// append to existing value
+										readOver(blockStringLength, "");
+										
+									// update counter
+										charactersToRead -= (int)blockStringLength;
+										
+								}
+							
+							blocksToRead--;
+						
+						}
+						
+						continue;
+					
+					}
 					
 					bool insertNull = false;
+					numData = 0;
 					
 					if(compressionSwitch > 0){
 					
@@ -884,8 +980,8 @@
 		for(i = 1; i <= numberOfCases; i++){
 			
 			//loop through vars, skipping head of list
-				//variable_t * current = variablesList;
-				//current = current->next;
+				struct Variable * current = variablesList;
+				current = current->next;
 				
 				if(includeRowIndex){
 					fprintf(csvs[fileNumber-1],"%d,", i);
@@ -895,6 +991,104 @@
 				for(j = 0; j < numberOfVariables; j++){
 					
 					//current->type
+					
+					if(current->type != 0){
+					
+						int charactersToRead = (current->writeFormatCode >> 16) & 0xFF; //byte 2
+						
+						double blocksToRead = floorf( (((float)charactersToRead - 1) / 8) + 1 );
+						
+						while (blocksToRead > 0) {
+							
+							if (compressionSwitch > 0) {
+							
+								if(clusterIndex > 7){
+						
+									cluster[0] = readIntByteNoOutput();
+									cluster[1] = readIntByteNoOutput();
+									cluster[2] = readIntByteNoOutput();
+									cluster[3] = readIntByteNoOutput();
+									cluster[4] = readIntByteNoOutput();
+									cluster[5] = readIntByteNoOutput();
+									cluster[6] = readIntByteNoOutput();
+									cluster[7] = readIntByteNoOutput();
+									
+									clusterIndex = 0;
+								
+								}
+								
+								// convert byte to an unsigned byte in an int
+									int byteValue = (0x000000FF & (int)cluster[clusterIndex]);
+							
+									clusterIndex++;
+								
+								switch (byteValue) {
+									
+									// skip this code
+										case COMPRESS_SKIP_CODE:
+									// all blanks
+										case COMPRESS_ALL_BLANKS:
+										break;
+									
+									// end of file, no more data to follow. This should not happen.
+										case COMPRESS_END_OF_FILE:
+											exitAndCloseFile("Error reading data: unexpected end of compressed data file (cluster code 252)", "");
+										break;
+										
+									// data cannot be compressed, the value follows the cluster
+										case COMPRESS_NOT_COMPRESSED:
+										
+											{
+										
+												// read a maximum of 8 characters but could be less if this is the last block
+													size_t blockStringLength = (size_t)MIN(8, (float)charactersToRead);
+													
+												// append to existing value
+													readOver((size_t)blockStringLength, "");
+													
+												// if this is the last block, skip the remaining dummy byte(s) (in the block of 8 bytes)
+													if (charactersToRead < 8) {
+														readOver((size_t)(8 - charactersToRead), "");
+													}
+												// update the characters counter
+													charactersToRead -= (int)blockStringLength;
+												
+											}
+											
+										break;
+									
+									// system missing value
+										case COMPRESS_MISSING_VALUE:
+											exitAndCloseFile("Error reading data: unexpected SYSMISS for string variable", "");
+										break;
+									
+									// 1-251 value is code minus the compression BIAS (normally always equal to 100)
+										default:
+											exitAndCloseFile("Error reading data: unexpected compression code for string variable", "");
+										break;
+								}
+							
+							//UNCOMPRESSED DATA
+								} else {
+								
+									// read a maximum of 8 characters but could be less if this is the last block
+										size_t blockStringLength = (size_t)MIN(8, (float)charactersToRead);
+										
+									// append to existing value
+										readOver(blockStringLength, "");
+										
+									// update counter
+										charactersToRead -= (int)blockStringLength;
+										
+								}
+							
+							blocksToRead--;
+						
+						}
+						
+						continue;
+					
+					}
 					
 					numData = 0;
 					bool insertNull = false;

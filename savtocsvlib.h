@@ -22,12 +22,13 @@
 		int measure;
 		int cols;
 		int alignment;
+		int writeFormatCode;
 		struct Variable * next;
 	};
 
 void closeFile();
 void exitAndCloseFile(char *str, char *bound);
-void addVariable(struct Variable * head, int type);
+void addVariable(struct Variable * head, int type, int writeFormatCode);
 void convertToCSV(char *filename);
 void readHeader();
 void readMeta();

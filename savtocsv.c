@@ -10,7 +10,9 @@ int main(int argc, char *argv[]){
 	//open the file or exit
 		convertToCSV(sav);
 	
-	printf("\n");
+	if(!silent){
+		printf("\n");
+	}
 	
 	return 0;
 	
@@ -39,7 +41,7 @@ void parseOpts(int argc, char *argv[]){
 						printf("%s", ANSI_COLOR_RESET);
 						printf("version ");
 						printf("%s", ANSI_COLOR_YELLOW);
-						printf("version 1.8 ");
+						printf("version 1.9 ");
 						printf("%s", ANSI_COLOR_RESET);
 						printf("2021-03-23\n");
 						exit(0);
