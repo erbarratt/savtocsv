@@ -37,7 +37,7 @@
 	int numberOfVariables = 0;
 
 /** @var variable_t* variablesList Linked list of Variable structures */
-	variable_t * variablesList = NULL;
+	struct Variable * variablesList = NULL;
 
 /**
 * Close file
@@ -64,9 +64,9 @@
 * @param int type Variable typecode to add one creation
 * @return void
 */
-	void addVariable(variable_t * head, int type) {
+	void addVariable(struct Variable * head, int type) {
 	
-		variable_t * current = head;
+		struct Variable * current = head;
 		
 		//find last element
 			while (current->next != NULL) {
@@ -74,7 +74,7 @@
 			}
 		
 		//add new var
-			current->next = (variable_t *) malloc(sizeof(variable_t));
+			current->next = (struct Variable *) malloc(sizeof(struct Variable));
 			current->next->type = type;
 			current->next->measure = 0;
 			current->next->cols = 0;
@@ -111,7 +111,12 @@
 			printOut("Opened .sav file: \n\t%s", filename, "cyan");
 			
 		//initialise linked list
-			variablesList = (variable_t*)malloc(sizeof(variable_t));
+			variablesList = (struct Variable*)malloc(sizeof(struct Variable));
+			
+			if (variablesList == NULL) {
+			    exitAndCloseFile("Failed to allocate memory for variables.", "");
+			}
+			
 			variablesList->type = 0;
 			variablesList->measure = 0;
 			variablesList->cols = 0;
@@ -158,7 +163,7 @@
 			//@4
 		
 		//read SPSS Version text
-			readOver(60, "Header:");
+			readOver((size_t)60, "Header:");
 			
 			//@64
 		
@@ -197,18 +202,18 @@
 			//@92
 			
 		// creation date
-			readOver(9, "Creation Date:");
-			readOver(8, "Creation Time:");
+			readOver((size_t)9, "Creation Date:");
+			readOver((size_t)8, "Creation Time:");
 			
 			//@109
 			
 		// file label
-			readOver(64, "File Label:");
+			readOver((size_t)64, "File Label:");
 			
 			//@173
 			
 		// padding
-			readOver(3, "Padding:");
+			readOver((size_t)3, "Padding:");
 			
 			//@176
 			
@@ -260,7 +265,7 @@
 							// read the lines
 								int i;
 								for (i = 0; i < numberOfLines; i++) {
-									readOver(80, "Doc Content:");
+									readOver((size_t)80, "Doc Content:");
 								}
 							
 						}
@@ -287,27 +292,27 @@
 								
 								// SPSS Record Type 7 Subtype 3 - Source system characteristics
 									case 3:
-										readOver(32, "Source system characteristics:");
+										readOver((size_t)32, "Source system characteristics:");
 									break;
 									
 								// SPSS Record Type 7 Subtype 4 - Source system floating pt constants
 									case 4:
-										readOver(24, "Source system floating pt constants:");
+										readOver((size_t)24, "Source system floating pt constants:");
 									break;
 									
 								// SPSS Record Type 7 Subtype 5 - Variable sets
 									case 5:
-										readOver(datalen, "Variable Sets:");
+										readOver((size_t)datalen, "Variable Sets:");
 									break;
 									
 								// SPSS Record Type 7 Subtype 6 - Trends date information
 									case 6:
-										readOver(datalen, "Trends Date Info:");
+										readOver((size_t)datalen, "Trends Date Info:");
 									break;
 									
 								// SPSS Record Type 7 Subtype 7 - Multi response groups
 									case 7:
-										readOver(datalen, "Multi Response Groups:");
+										readOver((size_t)datalen, "Multi Response Groups:");
 									break;
 								
 								// SPSS Record Type 7 Subtype 11 - Variable meta SPSS bits...
@@ -323,7 +328,7 @@
 										}
 									
 										//go through vars and set meta
-											variable_t * current = variablesList;
+											struct Variable * current = variablesList;
 											current = current->next;
 											
 											int i;
@@ -345,12 +350,12 @@
 								
 								// SPSS Record Type 7 Subtype 13 - Extended names
 									case 13:
-										readOver(datalen, "Extended Names:");
+										readOver((size_t)datalen, "Extended Names:");
 									break;
 								
 								// SPSS Record Type 7 Subtype 14 - Extended strings
 									case 14:
-										readOver(datalen, "Extended Strings:");
+										readOver((size_t)datalen, "Extended Strings:");
 									break;
 								
 								// SPSS Record Type 7 Subtype 16 - Number Of Cases
@@ -365,48 +370,48 @@
 								
 								// SPSS Record Type 7 Subtype 17 - Dataset Attributes
 									case 17:
-										readOver(datalen, "Dataset Attributes:");
+										readOver((size_t)datalen, "Dataset Attributes:");
 									break;
 								
 								// SPSS Record Type 7 Subtype 18 - Variable Attributes
 									case 18:
-										readOver(datalen, "Variable Attributes:");
+										readOver((size_t)datalen, "Variable Attributes:");
 									break;
 								
 								// SPSS Record Type 7 Subtype 19 -  Extended multiple response groups
 									case 19:
-										readOver(datalen, "Extended multiple response groups:");
+										readOver((size_t)datalen, "Extended multiple response groups:");
 									break;
 								
 								// SPSS Record Type 7 Subtype 20 -  Encoding, aka code page
 									case 20:
-										readOver(datalen, "Encoding, aka code page:");
+										readOver((size_t)datalen, "Encoding, aka code page:");
 									break;
 								
 								// SPSS Record Type 7 Subtype 21 - Extended value labels
 									case 21:
-										readOver(datalen, "Extended value labels:");
+										readOver((size_t)datalen, "Extended value labels:");
 									break;
 								
 								// SPSS Record Type 7 Subtype 22 - Missing values for long strings
 								
 									case 22:
-										readOver(datalen, "Missing values for long strings:");
+										readOver((size_t)datalen, "Missing values for long strings:");
 									break;
 									
 								// SPSS Record Type 7 Subtype 23 - Sort Index information
 									case 23:
-										readOver(datalen, "Sort Index information:");
+										readOver((size_t)datalen, "Sort Index information:");
 									break;
 								
 								// SPSS Record Type 7 Subtype 24 - XML info
 									case 24:
-										readOver(datalen, "XML info:");
+										readOver((size_t)datalen, "XML info:");
 									break;
 								
 								// Other info
 									default:
-										readOver(datalen, "Misc info:");
+										readOver((size_t)datalen, "Misc info:");
 									break;
 							}
 							
@@ -494,7 +499,7 @@
 					//@20
 				
 				// read varname
-					readOver(8, "---Var Short Name:");
+					readOver((size_t)8, "---Var Short Name:");
 				
 					//@28
 				
@@ -510,8 +515,8 @@
 								rem = 0;
 							}
 							
-							readOver(labelLength, "---Label:");
-							readOver(rem, "---label Skip:");
+							readOver((size_t)labelLength, "---Label:");
+							readOver((size_t)rem, "---label Skip:");
 						
 					}
 				
@@ -561,8 +566,8 @@
 						rem = 0;
 					}
 					
-					readOver(labelLength, "+++Label:");
-					readOver(rem, "+++Label Skip:");
+					readOver((size_t)labelLength, "+++Label:");
+					readOver((size_t)rem, "+++Label Skip:");
 				
 			}
 	
@@ -598,7 +603,7 @@
 			int rowCount = 1;
 		
 		//cluster for compression reads
-			int cluster[8] = {0,0,0,0,0,0,0,0};
+			int8_t cluster[8] = {0,0,0,0,0,0,0,0};
 			int clusterIndex = 8;
 		
 		//how many rows overall?
@@ -830,7 +835,7 @@
 		int fileNumber = 1;
 		
 		//cluster for compression reads
-			int cluster[8] = {0,0,0,0,0,0,0,0};
+			int8_t cluster[8] = {0,0,0,0,0,0,0,0};
 			int clusterIndex = 8;
 		
 		//progress tracking
@@ -1054,7 +1059,7 @@
 * @param char *msg Message to prepend to debug output
 * @return void
 */
-	void readOver(int amt, char *msg){
+	void readOver(size_t amt, char *msg){
 			
 		//only initialise with blank data if debug, otherwise doesn't matter.
 			if(debug){
@@ -1063,29 +1068,29 @@
 				char temp[amt+1];
 			
 				int i;
-				for(i = 0; i < amt; i++){
+				for(i = 0; i < (int)amt; i++){
 					temp[i] = ' ';
 				}
 				
 				temp[amt] = '\0';
 				
-				size_t read = fread(&temp, amt, 1, savPtr);
+				size_t read = fread(&temp, (size_t)amt, 1, savPtr);
 				
 				if(read != 4){
-					exitAndCloseFile("Failed to read %d bytes in readOver()", intToStr32(amt));
+					exitAndCloseFile("Failed to read %d bytes in readOver()", intToStr32((int)amt));
 				}
 				
 				if(!silent){
 					printOut(msg, "", "yellow");
 					printOut("\t%s", temp, "magenta");
-					printf("\t<%d bytes read, %d bytes total>\n\n", amt, cursor);
+					printf("\t<%d bytes read, %d bytes total>\n\n", (int)amt, cursor);
 				}
 				
 			} else {
-				fseek(savPtr, amt, SEEK_CUR);
+				fseek(savPtr, (int)amt, SEEK_CUR);
 			}
 			
-		cursor += amt;
+		cursor += (int)amt;
 		
 	}
 	
@@ -1119,7 +1124,7 @@
 * @param char *msg Message to prepend to debug output
 * @return void
 */
-	int readIntByte(char *msg){
+	int8_t readIntByte(char *msg){
 		
 		//read 4 bytes into memory location of int32buffer
 		size_t read = fread(&intByteBuffer, 1, 1, savPtr);
@@ -1145,7 +1150,7 @@
 * Read 1 byte as an int
 * @return void
 */
-	int readIntByteNoOutput(){
+	int8_t readIntByteNoOutput(){
 		
 		//read 4 bytes into memory location of int32buffer
 		size_t read = fread(&intByteBuffer, 1, 1, savPtr);

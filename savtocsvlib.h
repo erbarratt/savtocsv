@@ -17,17 +17,17 @@
 #define REAL_VLS_CHUNK 255
 
 /** @var struct Variable Variable structure definition */
-	typedef struct Variable{
+	struct Variable{
 		int type;
 		int measure;
 		int cols;
 		int alignment;
 		struct Variable * next;
-	} variable_t;
+	};
 
 void closeFile();
 void exitAndCloseFile(char *str, char *bound);
-void addVariable(variable_t * head, int type);
+void addVariable(struct Variable * head, int type);
 void convertToCSV(char *filename);
 void readHeader();
 void readMeta();
@@ -35,10 +35,10 @@ void readVariable();
 void readValueLabels();
 void dataToCsvLong();
 void dataToCsvFlat();
-void readOver(int amt, char *msg);
+void readOver(size_t amt, char *msg);
 void readWord(char *msg);
-int readIntByte(char *msg);
-int readIntByteNoOutput();
+int8_t readIntByte(char *msg);
+int8_t readIntByteNoOutput();
 int readInt32(char *msg);
 void readInt64(char *msg);
 double readDouble(char *msg);

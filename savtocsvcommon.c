@@ -120,8 +120,8 @@ char ANSI_COLOR_RESET[] = "\x1b[0m";
 	char* intToStr8(int8_t num){
 	
 		int length = snprintf( NULL, 0, "%d", num );
-		char* str = malloc( length + 1 );
-		snprintf( str, length + 1, "%d", num );
+		char* str = malloc( (size_t)length + 1 );
+		snprintf( str, (size_t)length + 1, "%d", num );
 		return str;
 		
 	}
@@ -134,8 +134,8 @@ char ANSI_COLOR_RESET[] = "\x1b[0m";
 	char* intToStr32(int num){
 	
 		int length = snprintf( NULL, 0, "%d", num );
-		char* str = malloc( length + 1 );
-		snprintf( str, length + 1, "%d", num );
+		char* str = malloc( (size_t)length + 1 );
+		snprintf( str, (size_t)length + 1, "%d", num );
 		return str;
 		
 	}
@@ -148,8 +148,8 @@ char ANSI_COLOR_RESET[] = "\x1b[0m";
 	char* intToStr64(int64_t num){
 	
 		int length = snprintf( NULL, 0, "%" PRId64, num );
-		char* str = malloc( length + 1 );
-		snprintf( str, length + 1, "%" PRId64, num );
+		char* str = malloc( (size_t)length + 1 );
+		snprintf( str, (size_t)length + 1, "%" PRId64, num );
 		return str;
 		
 	}
@@ -162,8 +162,8 @@ char ANSI_COLOR_RESET[] = "\x1b[0m";
 	char* doubleToStr(double num){
 	
 		int length = snprintf( NULL, 0, "%f", num );
-		char* str = malloc( length+1);
-		snprintf( str, length + 1, "%f", num );
+		char* str = malloc( (size_t)length+1);
+		snprintf( str, (size_t)length + 1, "%f", num );
 		return str;
 		
 	}
