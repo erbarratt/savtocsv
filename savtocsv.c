@@ -41,9 +41,9 @@ void parseOpts(int argc, char *argv[]){
 						printf("%s", ANSI_COLOR_RESET);
 						printf("version ");
 						printf("%s", ANSI_COLOR_YELLOW);
-						printf("1.9 ");
+						printf("1.9.1 ");
 						printf("%s", ANSI_COLOR_RESET);
-						printf("2021-03-23\n");
+						printf("2021-03-28\n");
 						exit(0);
 					}
 					
