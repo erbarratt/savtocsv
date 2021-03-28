@@ -555,11 +555,11 @@
 				// read the length of a value label
 				// the following byte in an unsigned integer (max value is 60)
 					int8_t labelLength = readIntByte("+++Label Length:");
-					int8_t max = 60;
+					//int8_t max = 60;
 				
-					if (labelLength > max) {
-						exitAndCloseFile("The length of a value label(%s) must be less than 60.", doubleToStr(labelValue));
-					}
+					//if (labelLength > max) {
+					//	exitAndCloseFile("The length of a value label(%s) must be less than 60.", doubleToStr(labelValue));
+					//}
 				
 				//need to ensure we read word-divisable amount of bytes
 					int rem = 8-((labelLength+1) % 8);
