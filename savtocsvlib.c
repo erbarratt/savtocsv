@@ -1270,7 +1270,7 @@
 				
 				size_t read = fread(&temp, (size_t)amt, 1, savPtr);
 				
-				if(read != 4){
+				if(read != amt){
 					exitAndCloseFile("Failed to read %d bytes in readOver()", intToStr32((int)amt));
 				}
 				
