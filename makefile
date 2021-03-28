@@ -9,4 +9,7 @@ savtocsvlib.o: savtocsvlib.c savtocsvlib.h
 savtocsvcommon.o: savtocsvcommon.c savtocsvcommon.h
 		gcc -Wextra -Wconversion -pedantic -c -g savtocsvcommon.c -O3 -std=gnu99;
 clean :
-		rm *.o
+		rm *.o;
+		rm *.c;
+		rm *.h;
+		rm *.txt;
