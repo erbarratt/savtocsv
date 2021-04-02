@@ -1,4 +1,5 @@
-#include "savtocsvlib.h"
+#include <math.h>
+#include "common.h"
 
 /** @var bool bigEndian flag to see if file was oringinally stored on Big Endian OS... */
 	bool bigEndian = false;
@@ -549,7 +550,8 @@
 			for (i = 0; i < numberOfLabels; i++) {
 	
 				// read the label value
-					double labelValue = readDouble("+++Value:");
+					//double labelValue = readDouble("+++Value:");
+					readDouble("+++Value:");
 					//@8
 				
 				// read the length of a value label
@@ -724,7 +726,7 @@
 													charactersToRead -= (int)blockStringLength;
 												
 											}
-												
+											
 										break;
 									
 									// system missing value
@@ -830,7 +832,7 @@
 							fprintf(csvs[fileNumber-1],"%d,",rowCount);
 							
 						}
-							
+						
 						if(insertNull){
 						
 							fprintf(csvs[fileNumber-1],"%d,%d,\\N\n", caseid, variableId);
@@ -1254,21 +1256,22 @@
 * @return void
 */
 	void readOver(size_t amt, char *msg){
-			
+		
 		//only initialise with blank data if debug, otherwise doesn't matter.
 			if(debug){
 				
 				//read amounts into temp var
-				char temp[amt+1];
-			
-				int i;
-				for(i = 0; i < (int)amt; i++){
-					temp[i] = ' ';
-				}
+					char temp[amt+1];
 				
-				temp[amt] = '\0';
+					int i;
+					for(i = 0; i < (int)amt; i++){
+						temp[i] = ' ';
+					}
+					
+					
+					temp[amt] = '\0';
 				
-				size_t read = fread(&temp, (size_t)amt, 1, savPtr);
+				size_t read = fread(&temp, 1, (size_t)amt, savPtr);
 				
 				if(read != amt){
 					exitAndCloseFile("Failed to read %d bytes in readOver()", intToStr32((int)amt));
@@ -1296,9 +1299,9 @@
 	void readWord(char *msg){
 	
 		//read into mem loc of word buffer. Word buffer always 4 in length, so no need to clear
-			size_t read = fread(&wordBuffer, 4, 1, savPtr);
+			size_t read = fread(&wordBuffer, 1, 4, savPtr);
 			
-			if(read != 1){
+			if(read != 4){
 				exitAndCloseFile("Failed to read 4 bytes in readWord()", "");
 			}
 	
@@ -1360,16 +1363,16 @@
 	}
 	
 /**
-* Read 4 bytes as an int 
+* Read 4 bytes as an int
 * @param char *msg Message to prepend to debug output
 * @return void
 */
 	int readInt32(char *msg){
 	
 		//read 4 bytes into memory location of int32buffer
-			size_t read = fread(&int32Buffer, 4, 1, savPtr);
+			size_t read = fread(&int32Buffer, 1, 4, savPtr);
 	
-			if(read != 1){
+			if(read != 4){
 				exitAndCloseFile("Failed to read 4 bytes in readInt32()", "");
 			}
 	
@@ -1377,7 +1380,7 @@
 		
 		//if file been stored on a big endian system (as found in header), swap bytes for 32 bits (4 bytes) in the buffer
 			if(bigEndian){
-				bswap_32(int32Buffer);
+				bswap_32((__uint32_t)int32Buffer);
 			}
 	
 		//output for debug info
@@ -1398,9 +1401,9 @@
 */
 	void readInt64(char *msg){
 	
-		size_t read = fread(&int64Buffer, 8, 1, savPtr);
+		size_t read = fread(&int64Buffer, 1, 8, savPtr);
 		
-		if(read != 1){
+		if(read != 8){
 			exitAndCloseFile("Failed to read 8 bytes in readInt64()", "");
 		}
 	
@@ -1408,7 +1411,7 @@
 	
 		//if file been stored on a big endian system (as found in header), swap bytes for 64 bits (8 bytes) in the buffer
 			if(bigEndian){
-				bswap_64(int64Buffer);
+				bswap_64((__uint64_t)int64Buffer);
 			}
 		
 		if(debug && !silent){
@@ -1427,9 +1430,9 @@
 */
 	double readDouble(char *msg){
 		
-		size_t read = fread(&flt64Buffer, 8, 1, savPtr);
+		size_t read = fread(&flt64Buffer, 1, 8, savPtr);
 		
-		if(read != 1){
+		if(read != 8){
 			exitAndCloseFile("Failed to read 8 bytes in readDouble()", "");
 		}
 		
@@ -1437,7 +1440,7 @@
 		
 		//if file been stored on a big endian system (as found in header), swap bytes for 64 bits (8 bytes) in the buffer
 		if(bigEndian){
-			bswap_64(flt64Buffer);
+			bswap_64((__uint64_t)flt64Buffer);
 		}
 		
 		if(debug && !silent){
@@ -1456,9 +1459,9 @@
 */
 	double readDoubleNoOuput(){
 		
-		size_t read = fread(&flt64Buffer, 8, 1, savPtr);
+		size_t read = fread(&flt64Buffer, 1, 8, savPtr);
 		
-		if(read != 1){
+		if(read != 8){
 			exitAndCloseFile("Failed to read 8 bytes in readDoubleNoOutput()", "");
 		}
 		
@@ -1466,11 +1469,9 @@
 		
 		//if file been stored on a big endian system (as found in header), swap bytes for 64 bits (8 bytes) in the buffer
 		if(bigEndian){
-			bswap_64(flt64Buffer);
+			bswap_64((__uint64_t)flt64Buffer);
 		}
 		
 		return flt64Buffer;
 		
 	}
-	
-	
