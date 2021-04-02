@@ -345,7 +345,7 @@ void parseOpts(int argc, char *argv[]){
 						
 						lineLimit = atoi(optarg);
 						if(lineLimit == 0){
-							printOutErr("-l argument must be number", optarg);
+							printOutErr("-l argument must be number > 0", optarg);
 							exit(EXIT_FAILURE);
 						} else {
 							printOut("CSV Line Length set to: \n\t%s", optarg, "magenta");
