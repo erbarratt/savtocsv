@@ -1,29 +1,19 @@
 # savtocsv
 SPSS .sav to short or long format csv file
 
-<h2>Install via compile savtocsv:</h2>
+<h2>Compile using CMake / make</h2>
 
-Installation has so far been tested on Debian (+Raspbian, +Ubuntu 20.04), Redhat (+CentOs 7) and macOS Catalina (10.15.7)
+Installation has so far been tested on Debian (+Raspbian, +Ubuntu 20.04), Redhat (+CentOs 7) and macOS Catalina (10.15.7).
+
+Only requires C Standard Library.
 
 Download the repository to your chosen directory then run the make command. This will read the makefile where gcc compile standards have been set. The makefile will create several .o files to combine into an executable, then remove the .o files.
 
-<pre># sudo curl -OL https://github.com/erbarratt/savtocsv/archive/refs/tags/savtocsv.1.9.2.tar.gz</pre>
+<pre># sudo curl -OL https://github.com/erbarratt/savtocsv/archive/refs/heads/main.tar.gz</pre>
 
 or
 
-<pre># sudo wget https://github.com/erbarratt/savtocsv/archive/refs/tags/savtocsv.1.9.2.tar.gz</pre>
-
-<pre># sudo tar -xvf savtocsv.1.9.2.tar.gz</pre>
-<pre># cd savtocsv-savtocsv.1.9.2</pre>
-<pre># sudo make</pre>
-<pre># sudo chmod 755 savtocsv</pre>
-
-When finished, an executable called savtocsv will have been created. To cleanup:
-
-<pre># sudo rm *.c</pre>
-<pre># sudo rm *.h</pre>
-<pre># sudo rm makefile</pre>
-<pre># sudo rm *.txt</pre>
+<pre># sudo wget https://github.com/erbarratt/savtocsv/archive/refs/heads/main.tar.gz</pre>
 
 Verify installation using the version option:
 
@@ -31,7 +21,7 @@ Verify installation using the version option:
 
 Should output similar to:
 
-<pre>savtocsv version 1.9.2 2021-03-28</pre>
+<pre>savtocsv version 1.9.3 2021-04-02</pre>
 
 <h2>Usage</h2>
 
