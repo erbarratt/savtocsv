@@ -14,7 +14,10 @@
 	char wordBuffer[4];
 
 /** @var int8_t intByteBuffer Buffer for storing 8 bit / 1 byte ints */
-	int8_t intByteBuffer;
+	uint8_t intByteBuffer;
+
+/** @var int8_t intByteBuffer Buffer for storing 8 bit / 1 byte ints */
+	int8_t intByteBufferS;
 
 /** @var int int32Buffer Buffer for storing 32 bit / 4 byte ints */
 	int int32Buffer;
@@ -550,18 +553,16 @@
 			for (i = 0; i < numberOfLabels; i++) {
 	
 				// read the label value
-					//double labelValue = readDouble("+++Value:");
-					readDouble("+++Value:");
+					double labelValue = readDouble("+++Value:");
 					//@8
 				
 				// read the length of a value label
 				// the following byte in an unsigned integer (max value is 60)
-					int8_t labelLength = readIntByte("+++Label Length:");
-					//int8_t max = 60;
+					uint8_t labelLength = readIntByte("+++Label Length:");
 				
-					//if (labelLength > max) {
-					//	exitAndCloseFile("The length of a value label(%s) must be less than 60.", doubleToStr(labelValue));
-					//}
+					if (labelLength > 255) {
+						exitAndCloseFile("The length of a value label(%s) must be less than 60.", doubleToStr(labelValue));
+					}
 				
 				//need to ensure we read word-divisable amount of bytes
 					int rem = 8-((labelLength+1) % 8);
@@ -606,7 +607,7 @@
 			int rowCount = 1;
 		
 		//cluster for compression reads
-			int8_t cluster[8] = {0,0,0,0,0,0,0,0};
+			uint8_t cluster[8] = {0,0,0,0,0,0,0,0};
 			int clusterIndex = 8;
 		
 		//how many rows overall?
@@ -933,7 +934,7 @@
 		int fileNumber = 1;
 		
 		//cluster for compression reads
-			int8_t cluster[8] = {0,0,0,0,0,0,0,0};
+			uint8_t cluster[8] = {0,0,0,0,0,0,0,0};
 			int clusterIndex = 8;
 		
 		//progress tracking
@@ -1321,7 +1322,7 @@
 * @param char *msg Message to prepend to debug output
 * @return void
 */
-	int8_t readIntByte(char *msg){
+	uint8_t readIntByte(char *msg){
 		
 		//read 4 bytes into memory location of int32buffer
 		size_t read = fread(&intByteBuffer, 1, 1, savPtr);
@@ -1342,12 +1343,39 @@
 		return intByteBuffer;
 		
 	}
+
+/**
+* Read 1 byte as an int
+* @param char *msg Message to prepend to debug output
+* @return void
+*/
+	int8_t readIntBytes(char *msg){
+		
+		//read 4 bytes into memory location of int32buffer
+		size_t read = fread(&intByteBufferS, 1, 1, savPtr);
+		
+		if(read != 1){
+			exitAndCloseFile("Failed to read 1 bytes in readIntByte()", "");
+		}
+		
+		cursor += 1;
+		
+		//output for debug info
+		if(debug && !silent){
+			printOut(msg, "", "yellow");
+			printf("\t%d\n", intByteBufferS);
+			printf("\t<1 byte read, %d bytes total>\n\n", cursor);
+		}
+		
+		return intByteBufferS;
+		
+	}
 	
 /**
 * Read 1 byte as an int
 * @return void
 */
-	int8_t readIntByteNoOutput(){
+	uint8_t readIntByteNoOutput(){
 		
 		//read 4 bytes into memory location of int32buffer
 		size_t read = fread(&intByteBuffer, 1, 1, savPtr);
@@ -1359,6 +1387,25 @@
 		cursor += 1;
 		
 		return intByteBuffer;
+		
+	}
+	
+/**
+* Read 1 byte as an int
+* @return void
+*/
+	int8_t readIntBytSNoOutput(){
+		
+		//read 4 bytes into memory location of int32buffer
+		size_t read = fread(&intByteBufferS, 1, 1, savPtr);
+		
+		if(read != 1){
+			exitAndCloseFile("Failed to read 1 bytes in readIntByteNoOutput()", "");
+		}
+		
+		cursor += 1;
+		
+		return intByteBufferS;
 		
 	}
 	

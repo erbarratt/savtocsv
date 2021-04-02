@@ -6,6 +6,7 @@
 	#include <stdlib.h>
 	#include <stdbool.h>
 	#include <string.h>
+	#include <stdint.h>
 	
 	#define MIN(a,b) (((a)<(b))?(a):(b))
 	
@@ -122,8 +123,10 @@
 		void dataToCsvFlat();
 		void readOver(size_t amt, char *msg);
 		void readWord(char *msg);
-		int8_t readIntByte(char *msg);
-		int8_t readIntByteNoOutput();
+		uint8_t readIntByte(char *msg);
+		int8_t readIntBytes(char *msg);
+		uint8_t readIntByteNoOutput();
+		int8_t readIntByteSNoOutput();
 		int readInt32(char *msg);
 		void readInt64(char *msg);
 		double readDouble(char *msg);
