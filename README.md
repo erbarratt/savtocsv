@@ -7,8 +7,6 @@ Installation has so far been tested on Debian (+Raspbian, +Ubuntu 20.04), Redhat
 
 Only requires C Standard Library.
 
-Download the repository to your chosen directory then run the make command. This will read the makefile where gcc compile standards have been set. The makefile will create several .o files to combine into an executable, then remove the .o files.
-
 <pre># sudo curl -OL https://github.com/erbarratt/savtocsv/archive/refs/heads/main.tar.gz</pre>
 
 or
