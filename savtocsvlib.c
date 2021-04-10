@@ -560,9 +560,9 @@
 				// the following byte in an unsigned integer (max value is 60)
 					uint8_t labelLength = readIntByte("+++Label Length:");
 				
-					if (labelLength > 255) {
-						exitAndCloseFile("The length of a value label(%s) must be less than 60.", doubleToStr(labelValue));
-					}
+					//if (labelLength > 255) {
+					//	exitAndCloseFile("The length of a value label(%s) must be less than 60.", doubleToStr(labelValue));
+					//}
 				
 				//need to ensure we read word-divisable amount of bytes
 					int rem = 8-((labelLength+1) % 8);
