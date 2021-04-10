@@ -1,1 +1,0 @@
-/usr/bin/gcc -g   CMakeFiles/savtocsv.dir/savtocsv.c.o CMakeFiles/savtocsv.dir/savtocsvlib.c.o CMakeFiles/savtocsv.dir/savtocsvcommon.c.o  -o savtocsv 
