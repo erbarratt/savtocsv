@@ -7,6 +7,7 @@
 	#include <stdbool.h>
 	#include <string.h>
 	#include <stdint.h>
+	#include <math.h>
 	
 	#define MIN(a,b) (((a)<(b))?(a):(b))
 	
@@ -124,9 +125,9 @@
 		void readOver(size_t amt, char *msg);
 		void readWord(char *msg);
 		uint8_t readIntByte(char *msg);
-		int8_t readIntBytes(char *msg);
+		//int8_t readIntBytes(char *msg);
 		uint8_t readIntByteNoOutput();
-		int8_t readIntByteSNoOutput();
+		//int8_t readIntByteSNoOutput();
 		int readInt32(char *msg);
 		void readInt64(char *msg);
 		double readDouble(char *msg);

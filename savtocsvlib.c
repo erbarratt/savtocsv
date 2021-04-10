@@ -17,7 +17,7 @@
 	uint8_t intByteBuffer;
 
 /** @var int8_t intByteBuffer Buffer for storing 8 bit / 1 byte ints */
-	int8_t intByteBufferS;
+	//int8_t intByteBufferS;
 
 /** @var int int32Buffer Buffer for storing 32 bit / 4 byte ints */
 	int int32Buffer;
@@ -553,7 +553,8 @@
 			for (i = 0; i < numberOfLabels; i++) {
 	
 				// read the label value
-					double labelValue = readDouble("+++Value:");
+					//double labelValue = readDouble("+++Value:");
+					readDouble("+++Value:");
 					//@8
 				
 				// read the length of a value label
@@ -1349,27 +1350,27 @@
 * @param char *msg Message to prepend to debug output
 * @return void
 */
-	int8_t readIntBytes(char *msg){
-		
-		//read 4 bytes into memory location of int32buffer
-		size_t read = fread(&intByteBufferS, 1, 1, savPtr);
-		
-		if(read != 1){
-			exitAndCloseFile("Failed to read 1 bytes in readIntByte()", "");
-		}
-		
-		cursor += 1;
-		
-		//output for debug info
-		if(debug && !silent){
-			printOut(msg, "", "yellow");
-			printf("\t%d\n", intByteBufferS);
-			printf("\t<1 byte read, %d bytes total>\n\n", cursor);
-		}
-		
-		return intByteBufferS;
-		
-	}
+	//int8_t readIntBytes(char *msg){
+	//
+	//	//read 4 bytes into memory location of int32buffer
+	//	size_t read = fread(&intByteBufferS, 1, 1, savPtr);
+	//
+	//	if(read != 1){
+	//		exitAndCloseFile("Failed to read 1 bytes in readIntByte()", "");
+	//	}
+	//
+	//	cursor += 1;
+	//
+	//	//output for debug info
+	//	if(debug && !silent){
+	//		printOut(msg, "", "yellow");
+	//		printf("\t%d\n", intByteBufferS);
+	//		printf("\t<1 byte read, %d bytes total>\n\n", cursor);
+	//	}
+	//
+	//	return intByteBufferS;
+	//
+	//}
 	
 /**
 * Read 1 byte as an int
@@ -1394,20 +1395,20 @@
 * Read 1 byte as an int
 * @return void
 */
-	int8_t readIntBytSNoOutput(){
-		
-		//read 4 bytes into memory location of int32buffer
-		size_t read = fread(&intByteBufferS, 1, 1, savPtr);
-		
-		if(read != 1){
-			exitAndCloseFile("Failed to read 1 bytes in readIntByteNoOutput()", "");
-		}
-		
-		cursor += 1;
-		
-		return intByteBufferS;
-		
-	}
+	//int8_t readIntBytSNoOutput(){
+	//
+	//	//read 4 bytes into memory location of int32buffer
+	//	size_t read = fread(&intByteBufferS, 1, 1, savPtr);
+	//
+	//	if(read != 1){
+	//		exitAndCloseFile("Failed to read 1 bytes in readIntByteNoOutput()", "");
+	//	}
+	//
+	//	cursor += 1;
+	//
+	//	return intByteBufferS;
+	//
+	//}
 	
 /**
 * Read 4 bytes as an int
