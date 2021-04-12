@@ -445,6 +445,15 @@
 			
 		}
 		
+		//struct Variable * current = variablesList;
+		//current = current->next;
+	
+		//int variableId = 1;
+		//int j;
+		//for(j = 0; j < numberOfVariables; j++){
+		//
+		//}
+		
 		if(!silent){
 			printOut("\t%s Variables found", intToStr32(numberOfVariables), "cyan");
 		}
@@ -668,9 +677,16 @@
 					
 					if(current->type != 0){
 					
-						int charactersToRead = (current->writeFormatCode >> 16) & 0xFF; //byte 2
+						int charactersToRead = (current->writeFormatCode >> 8) & 0xFF; //byte 2
 						
 						double blocksToRead = floorf( (((float)charactersToRead - 1) / 8) + 1 );
+						
+						if(!silent && debug){
+							printOut("\tString var ", "", "");
+							printOut("\twriteformatcode: %s", intToStr32(current->writeFormatCode), "");
+							printOut("\tcharstoread: %s", intToStr32(charactersToRead), "");
+							printOut("\tblocksToRead: %s", intToStr64((int64_t)blocksToRead), "");
+						}
 						
 						while (blocksToRead > 0) {
 							
@@ -760,6 +776,7 @@
 						
 						}
 						
+						current = current->next;
 						continue;
 					
 					}
@@ -897,7 +914,7 @@
 					
 					}
 					
-					//current = current->next;
+					current = current->next;
 					variableId++;
 					rowCount++;
 				

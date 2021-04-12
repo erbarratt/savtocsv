@@ -109,6 +109,7 @@
 				int cols;
 				int alignment;
 				int writeFormatCode;
+				int extendedStringLength;
 				struct Variable * next;
 			};
 		
