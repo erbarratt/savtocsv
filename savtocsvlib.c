@@ -41,7 +41,7 @@
 	int numberOfVariables = 0;
 
 /** @var variable_t* variablesList Linked list of Variable structures */
-	struct Variable * variablesList = NULL;
+	struct Variable* variablesList = NULL;
 
 /**
 * Close file
@@ -683,6 +683,8 @@
 						
 						if(!silent && debug){
 							printOut("\tString var ", "", "");
+							printf("\twriteformatcode: %#X\n", current->writeFormatCode);
+							printf("\twriteformatcode: %d\n", charactersToRead);
 							printOut("\twriteformatcode: %s", intToStr32(current->writeFormatCode), "");
 							printOut("\tcharstoread: %s", intToStr32(charactersToRead), "");
 							printOut("\tblocksToRead: %s", intToStr64((int64_t)blocksToRead), "");
@@ -1015,7 +1017,7 @@
 					
 					if(current->type != 0){
 					
-						int charactersToRead = (current->writeFormatCode >> 16) & 0xFF; //byte 2
+						int charactersToRead = (current->writeFormatCode >> 8) & 0xFF; //byte 2
 						
 						double blocksToRead = floorf( (((float)charactersToRead - 1) / 8) + 1 );
 						
@@ -1060,7 +1062,8 @@
 										case COMPRESS_NOT_COMPRESSED:
 										
 											{
-										
+												
+												//TODO figure out why in bugs.sav this doesn't loop only 3 times, rather than 7...?
 												// read a maximum of 8 characters but could be less if this is the last block
 													size_t blockStringLength = (size_t)MIN(8, (float)charactersToRead);
 													
@@ -1107,6 +1110,7 @@
 						
 						}
 						
+						current = current->next;
 						continue;
 					
 					}
@@ -1193,6 +1197,8 @@
 							fprintf(csvs[fileNumber-1],"%f",numData);
 						
 						}
+						
+					current = current->next;
 				
 				}
 				
