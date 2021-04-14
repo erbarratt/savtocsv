@@ -1,6 +1,8 @@
 # savtocsv
 SPSS .sav to short or long format csv file
 
+# PLEASE USE NEW REPOSITORY SAV2CSV - THIS ONE IS NO LONGER MAINTAINED https://github.com/erbarratt/sav2csv
+
 <h2>Compile using CMake / make</h2>
 
 Installation has so far been tested on Debian (+Raspbian, +Ubuntu 20.04), Redhat (+CentOs 7) and macOS Catalina (10.15.7).
